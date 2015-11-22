@@ -1,0 +1,19 @@
+{
+  "name": "invenio-search-js-demo",
+  "version": "0.0.1",
+  "description": "Invenio-Search-JS Demo",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": {
+    "name": "CERN",
+    "email": "info@invenio-software.org"
+  },
+  "license": "GPLv2",
+  "private": "true",
+  "dependencies": {
+    "angular": "^1.4.8",
+    "bootstrap": "^3.3.5"
+  }
+}

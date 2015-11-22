@@ -1,0 +1,8 @@
+<ul class="pager" ng-show="invenioSearchItems.hits.total > invenioSearchArgs.params.size">
+  <li class="previous" ng-show="invenioSearchArgs.params.page > 1">
+    <a href="#" ng-click="invenioSearchArgs.params.page=invenioSearchArgs.params.page-1">Previous</a>
+  </li>
+  <li class="next" ng-show="invenioSearchArgs.params.page >= 1 && invenioSearchArgs.params.page < invenioSearchItems.hits.total/invenioSearchArgs.params.size">
+    <a href="#" ng-click="invenioSearchArgs.params.page=invenioSearchArgs.params.page+1">Next</a>
+  </li>
+</ul>

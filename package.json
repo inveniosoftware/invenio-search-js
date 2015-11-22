@@ -1,0 +1,65 @@
+{
+  "name": "invenio-search-js",
+  "version": "0.0.1",
+  "description": "Javascript search components for Invenio-Search",
+  "author": {
+    "name": "CERN",
+    "email": "info@invenio-software.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drjova/invenio-search-js.git"
+  },
+  "dependencies": {
+    "angular": "^1.4.8",
+    "angular-mocks": "^1.4.8",
+    "angular-scenario": "^1.4.8"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "chai-jquery": "^1.2.3",
+    "coveralls": "^2.11.4",
+    "del": "^2.1.0",
+    "gulp": "^3.8.7",
+    "gulp-concat": "^2.3.4",
+    "gulp-coveralls": "^0.1.4",
+    "gulp-flatten": "^0.2.0",
+    "gulp-header": "^1.7.1",
+    "gulp-jsdoc": "^0.1.5",
+    "gulp-jshint": "^1.8.4",
+    "gulp-load-plugins": "^1.1.0",
+    "gulp-plumber": "^0.6.6",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^0.3.1",
+    "gulp-webserver": "^0.9.1",
+    "jasmine-core": "^2.3.4",
+    "jsdoc": "^3.4.0",
+    "jshint-stylish": "^0.4.0",
+    "karma": "^0.12.37",
+    "karma-chai": "^0.1.0",
+    "karma-chai-jquery": "^1.0.0",
+    "karma-chrome-launcher": "^0.1.4",
+    "karma-jasmine": "^0.1.5",
+    "karma-jquery": "^0.1.0",
+    "karma-mocha": "^0.1.8",
+    "karma-phantomjs-launcher": "^0.1.4",
+    "karma-sinon-chai": "^0.2.0",
+    "karma-spec-reporter": "^0.0.18",
+    "mocha": "^1.21.4",
+    "phantomjs": "^1.9.18",
+    "run-sequence": "^1.0.2",
+    "sinon": "^1.10.3",
+    "sinon-chai": "^2.5.0"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "scripts": {
+    "test": "gulp test"
+  },
+  "license": "GPLv2",
+  "bugs": {
+    "url": "https://github.com/inveniosoftware/invenio-search-js/issues"
+  },
+  "homepage": "https://github.com/inveniosoftware/invenio-search-js#readme"
+}
