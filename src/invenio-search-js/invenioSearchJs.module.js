@@ -79,7 +79,6 @@
         page: 1,
         size: 10,
         q: '',
-        index: '',
       }
     };
   }
@@ -116,7 +115,6 @@
         params: {
           page: parseInt(attrs.searchPage || 1),
           size: parseInt(attrs.searchSize || 20),
-          index: attrs.searchIndex || 'demo',
           doc_type: attrs.searchDoctype,
         }
       };
@@ -142,7 +140,6 @@
         searchDoctype: '@',
         searchEndpoint: '@',
         searchExtraParams: '@',
-        searchIndex: '@',
         searchPage: '@',
         searchSize: '@',
       },
