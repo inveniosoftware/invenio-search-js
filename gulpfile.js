@@ -100,7 +100,7 @@ gulp.task('example', function() {
  */
 gulp.task('process-all', ['clean'], function (done) {
   runSequence(
-    'jshint', 'test-src', 'build', 'templates', 'docs', 'example', done
+    'test', 'build', 'templates', 'docs', 'example', done
   );
 });
 
@@ -128,7 +128,7 @@ gulp.task('jshint', function () {
  * Validate source JavaScript
  */
 gulp.task('coveralls', function () {
-  return gulp.src('test/coverage/**/lcov.info')
+  return gulp.src('coverage/**/lcov.info')
     .pipe(plugins.coveralls());
 });
 
@@ -167,7 +167,7 @@ gulp.task('test-dist-minified', function (done) {
  * Run test once and exit
  */
 gulp.task('test', function (done) {
-  runSequence('jshint', 'test-src', 'coveralls', done);
+  runSequence('jshint', 'test-src', done);
 });
 
 /**

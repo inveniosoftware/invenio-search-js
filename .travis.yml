@@ -25,11 +25,18 @@
 notifications:
   email: false
 
+sudo: false
+
 language: node_js
 
 node_js:
   - '0.10'
   - '0.12'
+  - '4.0.0'
+  - '4.1.2'
+  - '4.2.2'
+  - '5.0.0'
+  - '5.1.0'
 
 before_script:
   - 'npm install -g gulp'
@@ -39,3 +46,16 @@ before_install:
 
 install:
   - 'npm test'
+
+after_success:
+  - 'npm run-script coverage'
+
+deploy:
+  provider: npm
+  email: info@invenio-software.org
+  api_key:
+    secure: API_KEY
+  on:
+    tags: true
+    repo: inveniosoftware/invenio-search-js
+    branch: master
