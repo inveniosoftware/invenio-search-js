@@ -33,7 +33,7 @@ npm i gulp-jsdoc
 npm run-script docs
 
 # go to the docs directory and create a *new* Git repo
-git clone -b gh-pages --single-branch https://github.com/inveniosoftware/invenio-search-js.git gh-pages
+git clone -b gh-pages --single-branch https://${GH_TOKEN}@${GH_REF} gh-pages
 rm -rf gh-pages/*.html gh-pages/styles gh-pages/scripts
 cp -r docs/* gh-pages
 cd gh-pages
@@ -47,6 +47,4 @@ git add .
 git commit -m "docs: deployment to github pages"
 
 # push the docs to gh-pages
-git push --quiet "https://${GH_TOKEN}@${GH_REF}" gh-pages > /dev/null 2>&1
-
-echo 'Deployed :)'
+git push --quiet origin gh-pages > /dev/null 2>&1
