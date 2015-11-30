@@ -43,14 +43,16 @@
                     search-endpoint="http://localhost:9200/_search"
                     search-extra-params='{"hello":"a"}'
                     search-page="1"
-                    search-size="2"
+                    search-size="5"
                     search-bar-template="/src/invenio-search-js/templates/invenioSearchBar.html"
                     search-bar-input-placeholder="Type something"
                 ></div>
-                <div invenio-search-results-count
-                  invenio-search-items="searching.invenioResults"
-                  search-count-template="/src/invenio-search-js/templates/invenioSearchResultsCount.html"
-                ></div>
+                <div class="text-center">
+                  <div invenio-search-results-count
+                    invenio-search-items="searching.invenioResults"
+                    search-count-template="/src/invenio-search-js/templates/invenioSearchResultsCount.html"
+                  ></div>
+                </div>
                 <!-- Loading -->
                 <div invenio-search-results-loading
                     invenio-search-loading="searching.invenioSearchLoading"
@@ -65,9 +67,10 @@
                 ></div>
                 <!-- Search pagination -->
                 <div invenio-search-results-pagination
-                  invenio-search-items="searching.invenioResults"
                   invenio-search-args="searching.invenioSearchArgs"
                   invenio-search-do="searching.invenioDoSearch(query)"
+                  invenio-search-items="searching.invenioResults"
+                  invenio-search-query="searching.invenioSearchQuery"
                   search-pagination-template="/src/invenio-search-js/templates/invenioSearchResultsPagination.html"
                 ></div>
             </div>

@@ -269,9 +269,10 @@
 
     return {
       scope: {
-        invenioSearchItems: '=',
         invenioSearchArgs: '=',
         invenioSearchDo: '&',
+        invenioSearchItems: '=',
+        invenioSearchQuery: '=',
         searchPaginationTemplate: '@',
       },
       templateUrl: templateUrl,
@@ -296,11 +297,243 @@
      */
     function link(scope, element, attrs) {
       // Watch when `invenioSearchArgs` changes and fire a new search
+      scope.paginatePages = [];
+
       scope.$watch('invenioSearchArgs.params.page', function(current, next) {
         if (current !== next) {
           scope.invenioSearchDo({query:scope.invenioSearchQuery});
+          buildPages();
         }
       });
+      scope.$watch('invenioSearchItems', function(current, next) {
+        buildPages();
+      });
+
+      /**
+       * @name addPages
+       * @desc Adds a range of numbers to our list
+       *
+       * @param {int} start The start of the range to add to the paging list
+       * @param {int} finish The end of the range to add to the paging list
+       */
+      function addRange(start, finish) {
+        // Create the Add Item Function
+        var _current = current();
+
+        var buildItem = function (i) {
+          return {
+            value: i,
+            title: 'Go to page ' + i,
+          };
+        };
+
+        // Add our items where i is the page number
+        for (var i = start; i <= finish; i++) {
+          var item = buildItem(i);
+          scope.paginatePages.push(item);
+        }
+      }
+
+      /**
+       * @name addLast
+       * @desc Add the last or end items in our paging list
+       *
+       * @param {int} pageCount The last page number or total page count
+       * @param {int} prev The previous page number in the paging sequence
+       */
+      function addLast(pageCount, prev) {
+        if (prev !== pageCount - 2) {
+          addDots();
+        }
+        addRange(pageCount - 1, pageCount);
+      }
+
+      /**
+       * @name addDots
+       * @desc Add Dots ie: 1 2 [..] 10 11 12 [..] 56 57
+       */
+      function addDots() {
+        scope.paginatePages.push({
+          value: '..'
+        });
+      }
+
+      /**
+       * @name addFirst
+       * @desc Add the first or beginning items in our paging list
+       *
+       * @param {int} next The next page number in the paging sequence
+       */
+      function addFirst(next) {
+        addRange(1, 2);
+        if (next !== 3) {
+          addDots();
+        }
+      }
+
+      /**
+       * @name buildPages
+       * @desc Caclulate pages
+       */
+      function buildPages() {
+        // Reset pages
+        scope.paginatePages = [];
+        // How many neighbours to show before and after the current page
+        var adjacent = 2;
+        // Get total pages based on the results shown by page
+        var pageCount = total();
+        // Get the current page
+        var _current = current();
+        // Display the adjacent a1 a2 a3 + current + a5 a6 a7
+        var adjacentSize = (2 * adjacent) + 2;
+
+        // Pages to show in the pagination
+        var start, finish;
+        // Simply display all the pages
+        if (pageCount <= (adjacentSize + 2)) {
+          start = 1;
+          addRange(start, pageCount);
+        } else {
+          if (_current - adjacent <= 2) {
+            start = 1;
+            finish = 1 + adjacentSize;
+            addRange(start, finish);
+            addLast(pageCount, finish);
+          } else if (_current < pageCount - (adjacent + 2)) {
+            start = _current - adjacent;
+            finish = _current + adjacent;
+            addFirst(start);
+            addRange(start, finish);
+            addLast(pageCount, finish);
+          } else {
+            start = pageCount - adjacentSize;
+            finish = pageCount;
+            addFirst(start);
+            addRange(start, finish);
+          }
+        }
+      }
+
+      /**
+       * @name total
+       * @desc Caclulate the total number of pages
+       */
+      function total() {
+        var _total;
+        try {
+          _total = scope.invenioSearchItems.hits.total;
+        } catch (error) {
+          _total = 0;
+        }
+        return Math.ceil(_total/scope.invenioSearchArgs.params.size);
+      }
+
+      /**
+       * @name current
+       * @desc Calculate the current page
+       */
+      function current() {
+        return scope.invenioSearchArgs.params.page || 1;
+      }
+
+      /**
+       * @name next
+       * @desc Calculate the next page
+       */
+      function next() {
+        var _next = current();
+        var _total = total();
+        if (_next < _total) {
+          _next = _next + 1;
+        }
+        return _next;
+      }
+
+      /**
+       * @name previous
+       * @desc Calculate the previous page
+       */
+      function previous() {
+        var _previous = current();
+        var _total = total();
+        if (_previous <= _total) {
+          _previous = _previous - 1;
+        }
+        return _previous;
+      }
+
+      /**
+       * @name getPageClass
+       * @desc Calculate page class if it is active or not
+       *
+       * @param {int} index A given page of the array
+       */
+      function getPageClass(index) {
+        return index === current() ? 'active' : '';
+      }
+
+      /**
+       * @name getNextClass
+       * @desc Calculate the next arrow if it is active or not
+       */
+      function getNextClass() {
+        return current() < total() ? '' : 'disabled';
+      }
+
+      /**
+       * @name getPrevClass
+       * @desc Calculate the previous arrow if it is active or not
+       */
+      function getPrevClass() {
+        return current() > 1 ? '' : 'disabled';
+      }
+
+      /**
+       * @name getFirstClass
+       * @desc Calculate the go to first if it is active or not
+       */
+      function getFirstClass() {
+        return current() !== 1 ? '' : 'disabled';
+      }
+
+      /**
+       * @name getLastClass
+       * @desc Calculate the go to last if it is active or not
+       */
+      function getLastClass() {
+        return current() !== total() ? '' : 'disabled';
+      }
+
+      /**
+       * @name changePage
+       * @desc Change page to the given index
+       *
+       * @param {int} index A given page of the array
+       */
+      function changePage(index) {
+        if (index > total()) {
+          scope.invenioSearchArgs.params.page = total();
+        } else if ( index < 1) {
+          scope.invenioSearchArgs.params.page = 1;
+        } else {
+          scope.invenioSearchArgs.params.page = index;
+        }
+      }
+
+      // Pages calculator
+      scope.paginationHelper = {
+        changePage: changePage,
+        current: current,
+        getFirstClass: getFirstClass,
+        getLastClass: getLastClass,
+        getNextClass: getNextClass,
+        getPageClass: getPageClass,
+        getPrevClass: getPrevClass,
+        next: next,
+        pages: buildPages,
+        previous: previous,
+        total: total,
+      };
     }
   }
 
@@ -348,6 +581,7 @@
     /**
      * @name search
      * @desc Makes the search request to the given endpoint
+     *
      * @param {Object} args the `$http` args given from Controllers.SearchControllers.invenioSearchArgs
      * @returns {Object} promise
      * @memberOf Services.invenioSearchAPI
@@ -367,8 +601,6 @@
 
   // Inject the $http and $q
   invenioSearchAPI.$inject = ['$http', '$q'];
-
-  ////////////
 
   // Setup angular directives
   angular.module('invenioSearchJs.directives', [])
