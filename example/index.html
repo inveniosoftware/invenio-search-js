@@ -22,7 +22,7 @@
 <html>
   <head>
     <script src="./node_modules/angular/angular.js"></script>
-    <script src="./lib/invenio-search-js.js"></script>
+    <script src="/src/invenio-search-js/invenioSearchJs.module.js"></script>
     <link href="./node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet"/>
   </head>
   <body>
@@ -44,31 +44,31 @@
                     search-extra-params='{"hello":"a"}'
                     search-page="1"
                     search-size="2"
-                    search-bar-template="/lib/templates/invenioSearchBar.html"
+                    search-bar-template="/src/invenio-search-js/templates/invenioSearchBar.html"
                     search-bar-input-placeholder="Type something"
                 ></div>
                 <div invenio-search-results-count
                   invenio-search-items="searching.invenioResults"
-                  search-count-template="/lib/templates/invenioSearchResultsCount.html"
+                  search-count-template="/src/invenio-search-js/templates/invenioSearchResultsCount.html"
                 ></div>
                 <!-- Loading -->
                 <div invenio-search-results-loading
                     invenio-search-loading="searching.invenioSearchLoading"
-                    search-loading-template="/lib/templates/invenioSearchLoading.html"
+                    search-loading-template="/src/invenio-search-js/templates/invenioSearchLoading.html"
                     search-loading-message="Loading......"
                 ></div>
                 <!-- Search results-->
                 <div invenio-search-results
                   invenio-search-items="searching.invenioResults.hits.hits"
-                  search-results-template="/lib/templates/invenioSearchResults.html"
-                  search-results-record-template="/lib/templates/invenioSearchResultsRecord.html"
+                  search-results-template="/src/invenio-search-js/templates/invenioSearchResults.html"
+                  search-results-record-template="/src/invenio-search-js/templates/invenioSearchResultsRecord.html"
                 ></div>
                 <!-- Search pagination -->
                 <div invenio-search-results-pagination
                   invenio-search-items="searching.invenioResults"
                   invenio-search-args="searching.invenioSearchArgs"
                   invenio-search-do="searching.invenioDoSearch(query)"
-                  search-pagination-template="/lib/templates/invenioSearchResultsPagination.html"
+                  search-pagination-template="/src/invenio-search-js/templates/invenioSearchResultsPagination.html"
                 ></div>
             </div>
           </div>

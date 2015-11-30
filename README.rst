@@ -51,7 +51,7 @@ Demo
 .. code-block:: console
 
     $ cd example; npm install; cd ..
-    $ gulp demo
+    $ npm run-script demo
 
 Navigate to ``http://localhost:8000`` to see the ``demo``
 
@@ -59,7 +59,7 @@ Tests
 -----
 .. code-block:: console
 
-    $ gulp test
+    $ npm test
 
 Docs
 ----
@@ -67,7 +67,7 @@ Docs
 .. code-block:: console
 
     $ # build
-    $ gulp docs
+    $ npm run-script docs
     $ # read
     $ open docs/index.html
 

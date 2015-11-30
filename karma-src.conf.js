@@ -35,22 +35,24 @@ module.exports = function(config) {
     frameworks: ['mocha', 'chai-jquery', 'jquery-1.8.3', 'sinon-chai'],
 
     plugins: [
-      'karma-mocha',
       'karma-chai',
-      'karma-sinon-chai',
-      'karma-chrome-launcher',
-      'karma-phantomjs-launcher',
-      'karma-jquery',
       'karma-chai-jquery',
-      'karma-spec-reporter'
+      'karma-chrome-launcher',
+      'karma-coverage',
+      'karma-jquery',
+      'karma-mocha',
+      'karma-phantomjs-launcher',
+      'karma-sinon-chai',
+      'karma-spec-reporter',
+      'karma-ng-html2js-preprocessor'
     ],
 
     // list of files / patterns to load in the browser
     files: [
       'node_modules/angular/angular.js',
       'node_modules/angular-mocks/angular-mocks.js',
-      'src/**/*.module.js',
       'src/**/*.js',
+      'src/**/*.html',
       'test/unit/**/*.js'
     ],
 
@@ -63,13 +65,20 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      'src/**/*.js': ['coverage'],
+      'src/**/*.html': ['ng-html2js']
     },
 
+    // Coverage reporter
+    coverageReporter: {
+      type: 'lcovonly',
+      dir: 'coverage/'
+    },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress', 'spec'],
+    reporters: ['progress', 'spec', 'coverage'],
 
 
     // web server port

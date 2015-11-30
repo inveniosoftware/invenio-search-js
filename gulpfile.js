@@ -67,7 +67,16 @@ var lintFiles = [
 /**
  * Build
  */
-gulp.task('build', function() {
+
+// run all the build tasks
+gulp.task('build', ['clean.build'], function (done) {
+  runSequence(
+    'build.src', 'build.templates', done
+  );
+});
+
+// build the javascript files
+gulp.task('build.src', function() {
   gulp.src(sourceFiles)
     .pipe(plugins.plumber())
     .pipe(plugins.concat('invenio-search-js.js'))
@@ -78,45 +87,34 @@ gulp.task('build', function() {
     .pipe(gulp.dest('./dist'));
 });
 
-/**
- * Templates
- */
-gulp.task('templates', function() {
+// move the templates to dist
+gulp.task('build.templates', function() {
   gulp.src(templates)
     .pipe(plugins.flatten())
     .pipe(gulp.dest('./dist/templates'));
 });
 
 /**
- * Prepare the example
+ * Genearate docs.
  */
-gulp.task('example', function() {
-  gulp.src(path.join(rootDirectory, 'dist', '**', '*'))
-    .pipe(gulp.dest(path.join(rootDirectory, 'example', 'lib')));
+
+// create the docs
+gulp.task('docs', ['clean.docs'], function() {
+  return gulp.src('./src/**/*.js')
+    .pipe(plugins.jsdoc('./docs'));
 });
 
 /**
- * Process
+ * Tests
  */
-gulp.task('process-all', ['clean'], function (done) {
-  runSequence(
-    'test', 'build', 'templates', 'docs', 'example', done
-  );
+
+// Run test once and exit
+gulp.task('test', function (done) {
+  runSequence('test.jshint', 'test.src', done);
 });
 
-/**
- * Watch task
- */
-gulp.task('watch', function () {
-
-  // Watch JavaScript files
-  gulp.watch(sourceFiles, ['process-all']);
-});
-
-/**
- * Validate source JavaScript
- */
-gulp.task('jshint', function () {
+// check jshint
+gulp.task('test.jshint', function () {
   return gulp.src(lintFiles)
     .pipe(plugins.plumber())
     .pipe(plugins.jshint())
@@ -124,9 +122,15 @@ gulp.task('jshint', function () {
     .pipe(plugins.jshint.reporter('fail'));
 });
 
-/**
- * Validate source JavaScript
- */
+// test sources
+gulp.task('test.src', function (done) {
+  karma.start({
+    configFile: __dirname + '/karma-src.conf.js',
+    singleRun: true
+  }, done);
+});
+
+// coveralls
 gulp.task('coveralls', function () {
   return gulp.src('coverage/**/lcov.info')
     .pipe(plugins.coveralls());
@@ -134,68 +138,44 @@ gulp.task('coveralls', function () {
 
 
 /**
- * Run test once and exit
+ * Demo
  */
-gulp.task('test-src', function (done) {
-  karma.start({
-    configFile: __dirname + '/karma-src.conf.js',
-    singleRun: true
-  }, done);
-});
 
-/**
- * Run test once and exit
- */
-gulp.task('test-dist-concatenated', function (done) {
-  karma.start({
-    configFile: __dirname + '/karma-dist-concatenated.conf.js',
-    singleRun: true
-  }, done);
-});
-
-/**
- * Run test once and exit
- */
-gulp.task('test-dist-minified', function (done) {
-  karma.start({
-    configFile: __dirname + '/karma-dist-minified.conf.js',
-    singleRun: true
-  }, done);
-});
-
-/**
- * Run test once and exit
- */
-gulp.task('test', function (done) {
-  runSequence('jshint', 'test-src', done);
-});
-
-/**
- * Clean all target folders
- */
-gulp.task('clean', function() {
-  return del(['dist', 'docs', 'example/lib']);
-});
-
-/**
- * Genearate docs.
- */
-gulp.task('docs', ['clean'], function() {
-  return gulp.src('./src/**/*.js')
-    .pipe(plugins.jsdoc('./docs'));
-});
-
-/**
- * Run the demo
- */
 gulp.task('demo', function() {
-  gulp.src(path.join(rootDirectory, 'example'))
+  gulp.src(rootDirectory)
     .pipe(plugins.webserver({
       livereload: true,
-      open: true
+      open: '/example/index.html'
   }));
 });
 
+/**
+ * Clean tasks
+ */
+
+// Clean docs directory
+gulp.task('clean.docs', function() {
+  return del(['docs']);
+});
+
+// Clean build directory if exists
+gulp.task('clean.build', function() {
+  return del(['build']);
+});
+
+/**
+ * Watch
+ */
+
+gulp.task('watch', function () {
+  // Watch JavaScript files
+  gulp.watch(sourceFiles, ['test']);
+});
+
+/**
+ * Default taks
+ */
+
 gulp.task('default', function () {
-  runSequence('process-all', 'watch');
+  runSequence('test', 'watch');
 });

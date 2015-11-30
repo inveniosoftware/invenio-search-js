@@ -1,0 +1,52 @@
+# -*- coding: utf-8 -*-
+#
+# This file is part of Invenio.
+# Copyright (C) 2015 CERN.
+#
+# Invenio is free software; you can redistribute it
+# and/or modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of the
+# License, or (at your option) any later version.
+#
+# Invenio is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Invenio; if not, write to the
+# Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+# MA 02111-1307, USA.
+#
+# In applying this license, CERN does not
+# waive the privileges and immunities granted to it by virtue of its status
+# as an Intergovernmental Organization or submit itself to any jurisdiction.
+
+set -e # exit with nonzero exit code if anything fails
+
+# clear and re-create the docs directory
+rm -rf docs || exit 0;
+
+# compile docs
+rm -rf node_modules/gulp-jsdoc
+npm i gulp-jsdoc
+npm run-script docs
+
+# go to the docs directory and create a *new* Git repo
+git clone -b gh-pages --single-branch https://github.com/inveniosoftware/invenio-search-js.git gh-pages
+rm -rf gh-pages/*.html gh-pages/styles gh-pages/scripts
+cp -r docs/* gh-pages
+cd gh-pages
+
+# set the user to invenio-developer
+git config user.name "invenio-developers"
+git config user.email "info@invenio-software.org"
+
+# add and commit
+git add .
+git commit -m "docs: deployment to github pages"
+
+# push the docs to gh-pages
+git push --quiet "https://${GH_TOKEN}@${GH_REF}" gh-pages > /dev/null 2>&1
+
+echo 'Deployed :)'

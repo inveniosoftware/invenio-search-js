@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/drjova/invenio-search-js.git"
+    "url": "git+https://github.com/inveniosoftware/invenio-search-js.git"
   },
   "dependencies": {
     "angular": "^1.4.8",
@@ -40,12 +40,14 @@
     "karma-chai": "^0.1.0",
     "karma-chai-jquery": "^1.0.0",
     "karma-chrome-launcher": "^0.1.4",
+    "karma-coverage": "^0.5.3",
     "karma-jasmine": "^0.1.5",
     "karma-jquery": "^0.1.0",
     "karma-mocha": "^0.1.8",
+    "karma-ng-html2js-preprocessor": "^0.2.0",
     "karma-phantomjs-launcher": "^0.1.4",
     "karma-sinon-chai": "^0.2.0",
-    "karma-spec-reporter": "^0.0.18",
+    "karma-spec-reporter": "0.0.18",
     "mocha": "^1.21.4",
     "phantomjs": "^1.9.18",
     "run-sequence": "^1.0.2",
@@ -53,11 +55,14 @@
     "sinon-chai": "^2.5.0"
   },
   "engines": {
-    "node": ">=0.8.0"
+    "node": ">=0.10"
   },
   "scripts": {
-    "test": "`npm bin`/istanbul cover gulp test",
-    "coverage": "gulp coveralls"
+    "build": "gulp build",
+    "coverage": "gulp coveralls",
+    "docs": "gulp docs",
+    "demo": "gulp demo",
+    "test": "gulp test"
   },
   "license": "GPLv2",
   "bugs": {
