@@ -55,6 +55,9 @@ script:
 after_success:
   - 'npm run-script coverage'
 
+before_deploy:
+  - 'npm run-script build'
+
 deploy:
   provider: npm
   email: info@invenio-software.org
