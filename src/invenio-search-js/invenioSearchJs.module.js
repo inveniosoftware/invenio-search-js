@@ -137,6 +137,7 @@
         invenioSearchDo: '&',
         invenioSearchQuery: '=',
         searchBarInputPlaceholder: '@',
+        searchBarTemplate: '@',
         searchDoctype: '@',
         searchEndpoint: '@',
         searchExtraParams: '@',
@@ -456,7 +457,7 @@
       function previous() {
         var _previous = current();
         var _total = total();
-        if (_previous <= _total) {
+        if (_previous > 1) {
           _previous = _previous - 1;
         }
         return _previous;

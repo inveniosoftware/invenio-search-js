@@ -23,7 +23,7 @@
 
 'use strict';
 
-describe('Check dependencies', function() {
+describe('Unit: testing dependencies', function() {
 
   var module;
   var dependencies;

@@ -37,18 +37,18 @@ module.exports = function(config) {
     plugins: [
       'karma-chai',
       'karma-chai-jquery',
-      'karma-chrome-launcher',
       'karma-coverage',
       'karma-jquery',
       'karma-mocha',
+      'karma-ng-html2js-preprocessor',
       'karma-phantomjs-launcher',
       'karma-sinon-chai',
       'karma-spec-reporter',
-      'karma-ng-html2js-preprocessor'
     ],
 
     // list of files / patterns to load in the browser
     files: [
+      'node_modules/jquery/dist/jquery.js',
       'node_modules/angular/angular.js',
       'node_modules/angular-mocks/angular-mocks.js',
       'src/**/*.js',
@@ -71,9 +71,16 @@ module.exports = function(config) {
 
     // Coverage reporter
     coverageReporter: {
-      type: 'lcovonly',
+      type: 'lcov',
       dir: 'coverage/'
     },
+
+
+    // load templates as module
+    ngHtml2JsPreprocessor: {
+      moduleName: 'templates'
+    },
+
 
     // test results reporter to use
     // possible values: 'dots', 'progress'

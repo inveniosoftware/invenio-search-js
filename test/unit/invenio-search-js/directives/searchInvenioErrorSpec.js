@@ -23,12 +23,13 @@
 
 'use strict';
 
-describe('Check search count directive', function() {
+describe('Check search error directive', function() {
 
   var $compile;
   var $rootScope;
   var scope;
   var template;
+  var controller;
 
   // load the templates
   beforeEach(angular.mock.module('templates'));
@@ -43,16 +44,13 @@ describe('Check search count directive', function() {
       $rootScope = _$rootScope_;
 
       scope = $rootScope;
-      scope.items = {
-        hits: {
-          total: 5,
-        }
-      };
+      scope.hasError= true;
 
-      template = '<invenio-search-results-count ' +
-        'invenio-search-items="items" ' +
-        'search-count-template="src/invenio-search-js/templates/invenioSearchResultsCount.html"' +
-        '></invenio-search-results-count>';
+      template = '<invenio-search-results-error ' +
+        'invenio-search-error="hasError" ' +
+        'search-message-error="Yo there is an error" '+
+        'search-message-template="src/invenio-search-js/templates/invenioSearchError.html"' +
+        '></invenio-search-results-error>';
 
       template = $compile(template)(scope);
       scope.$digest();
@@ -60,7 +58,7 @@ describe('Check search count directive', function() {
   );
 
   it('should have attributes', function() {
-    expect(template.isolateScope().invenioSearchItems.hits.total).to.be.equal(5);
-    expect(template.find('ng-pluralize').text()).to.be.equal('5 records found.');
+    expect(template.isolateScope().invenioSearchError).to.be.equal(true);
+    expect(template.isolateScope().searchMessageError).to.be.equal('Yo there is an error');
   });
 });

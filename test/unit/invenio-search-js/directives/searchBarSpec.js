@@ -23,52 +23,89 @@
 
 'use strict';
 
-describe('Check searchbar directive', function() {
+describe('Check search bar directive', function() {
 
-  var $compile,
-      $rootScope;
-
-  // Inject the angular module
-  beforeEach(module('invenioSearchJs'));
+  var $compile;
+  var $rootScope;
+  var $httpBackend;
+  var scope;
+  var template;
 
   // load the templates
-  beforeEach(module('src/invenio-search-js/templates/invenioSearchBar.html'));
+  beforeEach(angular.mock.module('templates'));
+
+  // Inject the angular module
+  beforeEach(angular.mock.module('invenioSearchJs'));
 
   beforeEach(
-    inject(function(_$compile_, _$rootScope_) {
-      // The injector unwraps the underscores (_) from around the parameter names when matching
+    inject(function(_$compile_, _$rootScope_, _$httpBackend_) {
+
       $compile = _$compile_;
+      $httpBackend = _$httpBackend_;
       $rootScope = _$rootScope_;
+
+      // Expect GET requests
+      $httpBackend.whenGET('*').respond({
+        hits: {
+          total: 2,
+          hits: [
+            {
+              title: 'I\'m Iron Man',
+            },
+            {
+              title: 'I\'m Captain America'
+            }
+          ]
+        }
+      });
+
+      scope = $rootScope;
+
+      scope.invenioSearchQuery = 'jarvis: make me a coffee';
+
+      scope.invenioSearchArgs = {
+        params: {
+          page: 1,
+          size: 10,
+          q: scope.invenioSearchQuery
+        }
+      };
+
+      scope.invenioDoSearch = function(query) {
+        return query;
+      };
+
+      template = '<invenio-search-bar ' +
+        'invenio-search-query="invenioSearchQuery" ' +
+        'invenio-search-args="invenioSearchArgs" ' +
+        'invenio-search-do="invenioDoSearch(query)" ' +
+        'search-doctype="" ' +
+        'search-extra-params="{}" ' +
+        'search-method="GET" ' +
+        'search-endpoint="/get" ' +
+        'search-page="1" ' +
+        'search-size="2" ' +
+        'search-bar-template="src/invenio-search-js/templates/invenioSearchBar.html" ' +
+        'search-bar-input-placeholder="Type something" ' +
+        '></invenio-search-bar>';
+
+      template = $compile(template)(scope);
+      scope.$digest();
     })
   );
 
-  it('creates invenio search bar directive',
-    inject(function(){
+  it('should have attributes', function() {
+    expect(template.isolateScope().searchPage).to.be.equal('1');
+    expect(template.isolateScope().searchSize).to.be.equal('2');
+    expect(template.isolateScope().invenioSearchQuery).to.be.equal('jarvis: make me a coffee');
+  });
 
-      var directiveCall = '<invenio-search-bar' +
-          'invenio-search-query="searching.invenioSearchQuery"' +
-          'invenio-search-args="searching.invenioSearchArgs"' +
-          'invenio-search-do="searching.invenioDoSearch(query)"' +
-          'search-doctype=""' +
-          'search-method="GET"' +
-          'search-endpoint="http://localhost:9200/_search"' +
-          'search-page="1"' +
-          'search-size="2"' +
-          'search-bar-template="src/invenio-search-js/templates/invenioSearchBar.html"' +
-          'search-bar-input-placeholder="Type something"' +
-          '></invenio-search-bar>';
-
-      var element = $compile(directiveCall)($rootScope);
-
-      // What we expect
-      var expectString = 'ng-model="invenioSearchQuery"';
-
-      // Digest the scope
-      $rootScope.$digest();
-
-      // Check
-      expect(element.html()).to.equal('');
-    })
-  );
-
+  it('should change the query', function() {
+    template.find('input').val('jarvis: search');
+    // Change the query
+    scope.invenioSearchQuery = 'jarvis: search ultron';
+    // Digest query
+    scope.$digest();
+    expect(template.isolateScope().invenioSearchQuery).to.be.equal('jarvis: search ultron');
+  });
 });

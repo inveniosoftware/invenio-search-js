@@ -23,7 +23,7 @@
 
 'use strict';
 
-describe('Check search count directive', function() {
+describe('Check search loading directive', function() {
 
   var $compile;
   var $rootScope;
@@ -43,16 +43,13 @@ describe('Check search count directive', function() {
       $rootScope = _$rootScope_;
 
       scope = $rootScope;
-      scope.items = {
-        hits: {
-          total: 5,
-        }
-      };
+      scope.isLoading = true;
 
-      template = '<invenio-search-results-count ' +
-        'invenio-search-items="items" ' +
-        'search-count-template="src/invenio-search-js/templates/invenioSearchResultsCount.html"' +
-        '></invenio-search-results-count>';
+      template = '<invenio-search-results-loading '+
+        'search-loading-message="Loading" ' +
+        'invenio-search-loading="isLoading" ' +
+        'search-loading-template="src/invenio-search-js/templates/invenioSearchLoading.html" ' +
+        '></invenio-search-results-loading>';
 
       template = $compile(template)(scope);
       scope.$digest();
@@ -60,7 +57,7 @@ describe('Check search count directive', function() {
   );
 
   it('should have attributes', function() {
-    expect(template.isolateScope().invenioSearchItems.hits.total).to.be.equal(5);
-    expect(template.find('ng-pluralize').text()).to.be.equal('5 records found.');
+    expect(template.isolateScope().invenioSearchLoading).to.be.equal(true);
+    expect(template.isolateScope().searchLoadingMessage).to.be.equal('Loading');
   });
 });

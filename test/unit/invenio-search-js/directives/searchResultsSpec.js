@@ -23,7 +23,7 @@
 
 'use strict';
 
-describe('Check search count directive', function() {
+describe('Check search results directive', function() {
 
   var $compile;
   var $rootScope;
@@ -43,16 +43,25 @@ describe('Check search count directive', function() {
       $rootScope = _$rootScope_;
 
       scope = $rootScope;
-      scope.items = {
-        hits: {
-          total: 5,
-        }
-      };
 
-      template = '<invenio-search-results-count ' +
-        'invenio-search-items="items" ' +
-        'search-count-template="src/invenio-search-js/templates/invenioSearchResultsCount.html"' +
-        '></invenio-search-results-count>';
+      scope.invenioSearchItems= [
+        {
+          _source: {
+            title: 'I\'m Iron Man',
+          }
+        },
+        {
+          _source: {
+            title: 'I\'m Captain America'
+          }
+        }
+      ];
+
+      template = '<invenio-search-results ' +
+        'invenio-search-items="invenioSearchItems" ' +
+        'search-results-template="src/invenio-search-js/templates/invenioSearchResults.html" ' +
+        'search-results-record-template="src/invenio-search-js/templates/invenioSearchResultsRecord.html" ' +
+      '></invenio-search-results>'
 
       template = $compile(template)(scope);
       scope.$digest();
@@ -60,7 +69,12 @@ describe('Check search count directive', function() {
   );
 
   it('should have attributes', function() {
-    expect(template.isolateScope().invenioSearchItems.hits.total).to.be.equal(5);
-    expect(template.find('ng-pluralize').text()).to.be.equal('5 records found.');
+    expect(template.isolateScope().invenioSearchItems.length).to.be.equal(2);
+    expect(template.isolateScope().invenioSearchItems.length).to.be.equal(2);
+    // Expect html list items to be 2
+    expect(template.find('li').size()).to.be.equal(2);
+    // Expect the frist element to be Iron Man and the second Captain America
+    expect(template.find('li').eq(0).text()).to.be.equal('I\'m Iron Man');
+    expect(template.find('li').eq(1).text()).to.be.equal('I\'m Captain America');
   });
 });
