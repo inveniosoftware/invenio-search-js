@@ -33,46 +33,59 @@
           <hr />
           <div ng-app="invenioSearchJs">
             <div ng-controller="invenioSearchController as searching">
-               <!-- Searchbar -->
-                <div invenio-search-bar
-                    invenio-search-query="searching.invenioSearchQuery"
-                    invenio-search-args="searching.invenioSearchArgs"
-                    invenio-search-do="searching.invenioDoSearch(query)"
-                    search-doctype=""
-                    search-method="GET"
-                    search-endpoint="http://localhost:9200/_search"
-                    search-extra-params='{"hello":"a"}'
-                    search-page="1"
-                    search-size="5"
-                    search-bar-template="/src/invenio-search-js/templates/invenioSearchBar.html"
-                    search-bar-input-placeholder="Type something"
-                ></div>
-                <div class="text-center">
-                  <div invenio-search-results-count
-                    invenio-search-items="searching.invenioResults"
-                    search-count-template="/src/invenio-search-js/templates/invenioSearchResultsCount.html"
-                  ></div>
-                </div>
-                <!-- Loading -->
-                <div invenio-search-results-loading
-                    invenio-search-loading="searching.invenioSearchLoading"
-                    search-loading-template="/src/invenio-search-js/templates/invenioSearchLoading.html"
-                    search-loading-message="Loading......"
-                ></div>
-                <!-- Search results-->
-                <div invenio-search-results
-                  invenio-search-items="searching.invenioResults.hits.hits"
-                  search-results-template="/src/invenio-search-js/templates/invenioSearchResults.html"
-                  search-results-record-template="/src/invenio-search-js/templates/invenioSearchResultsRecord.html"
-                ></div>
-                <!-- Search pagination -->
-                <div invenio-search-results-pagination
+              <!-- Searchbar -->
+              <div invenio-search-bar
+                  invenio-search-query="searching.invenioSearchQuery"
                   invenio-search-args="searching.invenioSearchArgs"
                   invenio-search-do="searching.invenioDoSearch(query)"
+                  search-doctype=""
+                  search-method="GET"
+                  search-endpoint="http://localhost:8888/api"
+                  search-extra-params='{"hello":"a"}'
+                  search-page="1"
+                  search-size="5"
+                  search-bar-template="/src/invenio-search-js/templates/invenioSearchBar.html"
+                  search-bar-input-placeholder="Type something"
+              ></div>
+              <!-- Loading -->
+              <div invenio-search-results-loading
+                  invenio-search-loading="searching.invenioSearchLoading"
+                  search-loading-template="/src/invenio-search-js/templates/invenioSearchLoading.html"
+                  search-loading-message="Loading......"
+              ></div>
+              <div class="text-center">
+                <div invenio-search-results-count
                   invenio-search-items="searching.invenioResults"
-                  invenio-search-query="searching.invenioSearchQuery"
-                  search-pagination-template="/src/invenio-search-js/templates/invenioSearchResultsPagination.html"
+                  search-count-template="/src/invenio-search-js/templates/invenioSearchResultsCount.html"
                 ></div>
+              </div>
+              <div class="row">
+                <div class="col-md-3">
+                  <div invenio-search-facets
+                      invenio-search-items="searching.invenioResults.aggregations"
+                      invenio-search-query="searching.invenioSearchQuery"
+                      invenio-search-do="searching.invenioDoSearch(query)"
+                      search-facets-template="/src/invenio-search-js/templates/invenioSearchFacets.html"
+                  >
+                  </div>
+                </div>
+                <div class="col-md-9">
+                  <!-- Search results-->
+                  <div invenio-search-results
+                    invenio-search-items="searching.invenioResults.hits.hits"
+                    search-results-template="/src/invenio-search-js/templates/invenioSearchResults.html"
+                    search-results-record-template="/src/invenio-search-js/templates/invenioSearchResultsRecord.html"
+                  ></div>
+                </div>
+              </div> <!-- /.row -->
+              <!-- Search pagination -->
+              <div invenio-search-results-pagination
+                invenio-search-args="searching.invenioSearchArgs"
+                invenio-search-do="searching.invenioDoSearch(query)"
+                invenio-search-items="searching.invenioResults"
+                invenio-search-query="searching.invenioSearchQuery"
+                search-pagination-template="/src/invenio-search-js/templates/invenioSearchResultsPagination.html"
+              ></div>
             </div>
           </div>
         </div>

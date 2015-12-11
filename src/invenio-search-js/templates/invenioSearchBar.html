@@ -3,7 +3,7 @@
     class="form-control"
     ng-model="invenioSearchQuery"
     ng-model-options="{ debounce: { 'default': 500, 'blur': 0 } }"
-    placeholder="{{searchBarInputPlaceholder}}"
+    placeholder="{{ searchBarInputPlaceholder }}"
     ng-change="invenioSearchArgs.params.page=1;invenioSearchDo({query:invenioSearchQuery})"
   />
 </form>

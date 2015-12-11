@@ -30,6 +30,8 @@
    */
   function invenioSearchController(invenioSearchAPI) {
 
+    var vm = this;
+
     /**
      * @name invenioDoSearch
      * @desc Does the search query and handles the response
@@ -37,42 +39,40 @@
      * @memberOf Controllers.invenioSearchController
      */
     function invenioDoSearch(query) {
-      var that = this;
       // enchance the query
       var q = {
         params: {
           q: query
         }
       };
-
+      vm.invenioSearchQuery = query;
       // Add the query to the request
-      that.invenioSearchArgs = angular.merge(that.invenioSearchArgs, q);
+      vm.invenioSearchArgs = angular.merge(vm.invenioSearchArgs, q);
 
       // Reset results
-      that.invenioResults = [];
-      that.invenioSearchError = false;
-      that.invenioSearchLoading = true;
-      invenioSearchAPI.search(this.invenioSearchArgs)
+      vm.invenioResults = [];
+      vm.invenioSearchError = false;
+      vm.invenioSearchLoading = true;
+      invenioSearchAPI.search(vm.invenioSearchArgs)
         .then(function(response) {
-          that.invenioResults = response.data;
+          vm.invenioResults = response.data;
         }, function(error) {
-          that.invenioSearchError = true;
-          console.log(error);
+          vm.invenioSearchError = true;
         }).finally(function() {
-          that.invenioSearchLoading = false;
+          vm.invenioSearchLoading = false;
         });
     }
 
     ////////////
 
-    this.invenioDoSearch = invenioDoSearch;
-    this.invenioResults = [];
-    this.invenioSearchError = false;
-    this.invenioSearchLoading = false;
-    this.invenioSearchQuery = '';
+    vm.invenioDoSearch = invenioDoSearch;
+    vm.invenioResults = [];
+    vm.invenioSearchError = false;
+    vm.invenioSearchLoading = false;
+    vm.invenioSearchQuery = '';
 
     // We don't have any logic on the controller until search initialized
-    this.invenioSearchArgs = {
+    vm.invenioSearchArgs = {
       url: '',
       method: 'GET',
       params: {
@@ -539,19 +539,20 @@
   }
 
   /**
-   * @namespace InvenioSearchResultsFacets
+   * @namespace InvenioSearchFacets
    * @desc Displays search results facets
    * @memberOf Directives
    */
-  function invenioSearchResultsFacets() {
+  function invenioSearchFacets() {
 
     return {
       scope: {
-        invenioSearchError: '=',
-        searchMessageError: '@',
+        invenioSearchItems: '=',
+        invenioSearchQuery: '=',
+        invenioSearchDo: '&',
         searchFacetsTemplate: '@',
       },
-      templateUrl: templateUrl
+      templateUrl: templateUrl,
     };
 
     ////////////
@@ -563,6 +564,56 @@
      */
     function templateUrl(element, attrs) {
       return attrs.searchFacetsTemplate;
+    }
+  }
+
+  /**
+   * @namespace InvenioSearchFacetsCheckboxGroup
+   * @desc Handles checkbox changes
+   * @memberOf Directives
+   */
+  function invenioSearchFacetsCheckboxGroup() {
+
+    return {
+      scope: false,
+      link: link
+    };
+
+    ////////////
+
+    /**
+     * @name link
+     * @desc Synchronizes the controller with the directive
+     * @memberOf Controllers.invenioSearchBar
+     */
+    function link(scope, element, attrs) {
+      var key = scope.$parent.$parent.key;
+      var value = scope.item.key.trim();
+      var item = key + ':' + value;
+
+      // Check if the element is checked
+      var query = scope.invenioSearchQuery.split(' OR ');
+      if (query.indexOf(item) > 0) {
+        element[0].checked = true;
+      }
+
+      element.bind('click', function($event) {
+        var query = scope.invenioSearchQuery.split(' OR ');
+        if (element[0].checked) {
+          query.push(item);
+          query = query.join(' OR ');
+        } else {
+          var index = query.indexOf(item);
+          // delete the requested from list
+          query.splice(index, 1);
+          if (query.length > 1) {
+            query = query.join(' OR ');
+          } else {
+            query = query.join('');
+          }
+        }
+        scope.invenioSearchDo({query:query});
+      });
     }
   }
 
@@ -593,8 +644,6 @@
         deferred.resolve(response);
       }, function(error) {
         deferred.reject(error);
-      }, function(update) {
-        deferred.notify(update);
       });
       return deferred.promise;
     }
@@ -606,12 +655,13 @@
   // Setup angular directives
   angular.module('invenioSearchJs.directives', [])
     .directive('invenioSearchBar', invenioSearchBar)
+    .directive('invenioSearchFacets', invenioSearchFacets)
     .directive('invenioSearchResults', invenioSearchResults)
     .directive('invenioSearchResultsCount', invenioSearchResultsCount)
     .directive('invenioSearchResultsError', invenioSearchResultsError)
-    .directive('invenioSearchResultsFacets', invenioSearchResultsFacets)
     .directive('invenioSearchResultsLoading', invenioSearchResultsLoading)
-    .directive('invenioSearchResultsPagination', invenioSearchResultsPagination);
+    .directive('invenioSearchResultsPagination', invenioSearchResultsPagination)
+    .directive('invenioSearchFacetsCheckboxGroup', invenioSearchFacetsCheckboxGroup);
 
   // Setup controllers
   angular.module('invenioSearchJs.controllers', [])
