@@ -1,0 +1,12 @@
+<div ng-repeat="(key, value) in invenioSearchItems track by $index">
+  <div ng-if="value.buckets.length > 0" class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">{{ key }}</h3>
+    </div>
+    <div class="panel-body">
+      <div ng-repeat="item in value.buckets">
+        <input invenio-search-facets-checkbox-group type="checkbox" /> {{ item.key }} ({{ item.doc_count }})
+      </div>
+    </div>
+  </div>
+</div>
