@@ -1,6 +1,6 @@
 /*
  * This file is part of Invenio.
- * Copyright (C) 2015 CERN.
+ * Copyright (C) 2015, 2016 CERN.
  *
  * Invenio is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -35,20 +35,23 @@ describe('Unit: testing dependencies', function() {
 
   beforeEach(function() {
     // Get module
-    module = angular.module('invenioSearchJs');
+    module = angular.module('invenioSearch');
     dependencies = module.requires;
   });
 
   it('should load directives module', function() {
-    expect(hasModule('invenioSearchJs.directives')).to.be.ok;
+    expect(hasModule('invenioSearch.directives')).to.be.ok;
   });
 
   it('should load controllers module', function() {
-    expect(hasModule('invenioSearchJs.controllers')).to.be.ok;
+    expect(hasModule('invenioSearch.controllers')).to.be.ok;
   });
 
   it('should load services module', function() {
-    expect(hasModule('invenioSearchJs.services')).to.be.ok;
+    expect(hasModule('invenioSearch.services')).to.be.ok;
   });
 
+  it('should load configuaration module', function() {
+    expect(hasModule('invenioSearch.configuration')).to.be.ok;
+  });
 });

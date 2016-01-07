@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015 CERN.
+# Copyright (C) 2015, 2016 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -28,8 +28,6 @@ set -e # exit with nonzero exit code if anything fails
 rm -rf docs || exit 0;
 
 # compile docs
-rm -rf node_modules/gulp-jsdoc
-npm i gulp-jsdoc
 npm run-script docs
 
 # go to the docs directory and create a *new* Git repo

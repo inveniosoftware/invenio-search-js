@@ -1,0 +1,6 @@
+<ul>
+  <li ng-repeat="record in vm.invenioSearchResults.hits.hits track by $index">
+    <h5>{{ record._source.title_statement.title }}</h5>
+    <p>{{ record._source.summary }}</p>
+  </li>
+</ul>

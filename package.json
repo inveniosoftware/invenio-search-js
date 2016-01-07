@@ -1,6 +1,6 @@
 {
   "name": "invenio-search-js",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "Javascript search components for Invenio-Search",
   "author": {
     "name": "CERN",
@@ -25,7 +25,6 @@
     "gulp-coveralls": "^0.1.4",
     "gulp-flatten": "^0.2.0",
     "gulp-header": "^1.7.1",
-    "gulp-jsdoc": "^0.1.5",
     "gulp-jshint": "^1.8.4",
     "gulp-load-plugins": "^1.1.0",
     "gulp-plumber": "^0.6.6",
@@ -46,6 +45,7 @@
     "karma-phantomjs-launcher": "^0.1.4",
     "karma-sinon-chai": "^0.2.0",
     "karma-spec-reporter": "0.0.18",
+    "minami": "^1.1.1",
     "mocha": "^1.21.4",
     "phantomjs": "^1.9.18",
     "run-sequence": "^1.0.2",
@@ -58,8 +58,8 @@
   "scripts": {
     "build": "gulp build",
     "coverage": "gulp coveralls",
-    "docs": "gulp docs",
     "demo": "gulp demo",
+    "docs": "jsdoc  -c .jsdoc --pedantic src/",
     "test": "gulp test"
   },
   "license": "GPLv2",

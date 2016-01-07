@@ -1,6 +1,6 @@
 /*
  * This file is part of Invenio.
- * Copyright (C) 2015 CERN.
+ * Copyright (C) 2015, 2016 CERN.
  *
  * Invenio is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -23,9 +23,10 @@
 
 'use strict';
 
-describe('Check search error directive', function() {
+describe('Check search count directive', function() {
 
   var $compile;
+  var $httpBackend;
   var $rootScope;
   var scope;
   var template;
@@ -35,22 +36,24 @@ describe('Check search error directive', function() {
   beforeEach(angular.mock.module('templates'));
 
   // Inject the angular module
-  beforeEach(angular.mock.module('invenioSearchJs'));
+  beforeEach(angular.mock.module('invenioSearch'));
 
   beforeEach(
-    inject(function(_$compile_, _$rootScope_) {
+    inject(function(_$compile_, _$rootScope_, _$httpBackend_) {
 
       $compile = _$compile_;
+      $httpBackend = _$httpBackend_;
       $rootScope = _$rootScope_;
 
       scope = $rootScope;
-      scope.hasError= true;
 
-      template = '<invenio-search-results-error ' +
-        'invenio-search-error="hasError" ' +
-        'search-message-error="Yo there is an error" '+
-        'search-message-template="src/invenio-search-js/templates/invenioSearchError.html"' +
-        '></invenio-search-results-error>';
+      template = '<invenio-search search-endpoint="/api"> ' +
+       '<invenio-search-count template="src/invenio-search-js/templates/count.html">' +
+       '</invenio-search-count>' +
+       '</invenio-search>';
+
+      // Expect a request
+      $httpBackend.whenGET('/api?page=1&size=20').respond(200, {success: true});
 
       template = $compile(template)(scope);
       scope.$digest();
@@ -58,7 +61,30 @@ describe('Check search error directive', function() {
   );
 
   it('should have attributes', function() {
-    expect(template.isolateScope().invenioSearchError).to.be.equal(true);
-    expect(template.isolateScope().searchMessageError).to.be.equal('Yo there is an error');
+    // 10 results
+    scope.vm.invenioSearchResults = {
+      hits: {
+        total: 10
+      }
+    };
+    scope.$digest();
+    expect(template.find('div').text().trim()).to.contain('10 records found.');
+
+    // 1 result
+    scope.vm.invenioSearchResults = {
+      hits: {
+        total: 1
+      }
+    };
+    scope.$digest();
+    expect(template.find('div').text().trim()).to.contain('1 record found.');
+    // no results
+    scope.vm.invenioSearchResults = {
+      hits: {
+        total: 0
+      }
+    };
+    scope.$digest();
+    expect(template.find('div').text().trim()).to.contain('No results.');
   });
 });

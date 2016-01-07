@@ -1,6 +1,6 @@
 /*
  * This file is part of Invenio.
- * Copyright (C) 2015 CERN.
+ * Copyright (C) 2015, 2016 CERN.
  *
  * Invenio is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -23,7 +23,7 @@
 
 'use strict';
 
-describe('Check search bar directive', function() {
+describe('Check earchbar directive', function() {
 
   var $compile;
   var $rootScope;
@@ -31,11 +31,11 @@ describe('Check search bar directive', function() {
   var scope;
   var template;
 
-  // load the templates
+  // Load the templates
   beforeEach(angular.mock.module('templates'));
 
   // Inject the angular module
-  beforeEach(angular.mock.module('invenioSearchJs'));
+  beforeEach(angular.mock.module('invenioSearch'));
 
   beforeEach(
     inject(function(_$compile_, _$rootScope_, _$httpBackend_) {
@@ -44,68 +44,43 @@ describe('Check search bar directive', function() {
       $httpBackend = _$httpBackend_;
       $rootScope = _$rootScope_;
 
-      // Expect GET requests
-      $httpBackend.whenGET('*').respond({
-        hits: {
-          total: 2,
-          hits: [
-            {
-              title: 'I\'m Iron Man',
-            },
-            {
-              title: 'I\'m Captain America'
-            }
-          ]
-        }
-      });
-
       scope = $rootScope;
 
-      scope.invenioSearchQuery = 'jarvis: make me a coffee';
+      template = '<invenio-search search-endpoint="/api"> ' +
+       '<invenio-search-bar template="src/invenio-search-js/templates/searchBar.html" ' +
+       'placeholder="Type something"></invenio-search-bar>' +
+       '</invenio-search>';
 
-      scope.invenioSearchArgs = {
-        params: {
-          page: 1,
-          size: 10,
-          q: scope.invenioSearchQuery
-        }
-      };
+      // Expect a request
+      $httpBackend.whenGET('/api?page=1&q=jarvis:call+Jessica+Jones&size=20').respond(200, {success: true});
+      $httpBackend.whenGET('/api?page=1&q=jarvis:+get+to+the+choppa&size=20').respond(200, {success: true});
 
-      scope.invenioDoSearch = function(query) {
-        return query;
-      };
-
-      template = '<invenio-search-bar ' +
-        'invenio-search-query="invenioSearchQuery" ' +
-        'invenio-search-args="invenioSearchArgs" ' +
-        'invenio-search-do="invenioDoSearch(query)" ' +
-        'search-doctype="" ' +
-        'search-extra-params="{}" ' +
-        'search-method="GET" ' +
-        'search-endpoint="/get" ' +
-        'search-page="1" ' +
-        'search-size="2" ' +
-        'search-bar-template="src/invenio-search-js/templates/invenioSearchBar.html" ' +
-        'search-bar-input-placeholder="Type something" ' +
-        '></invenio-search-bar>';
-
+      // Compile
       template = $compile(template)(scope);
+      template.scope().userQuery = 'jarvis: get to the choppa';
+
+      scope.vm.invenioSearchArgs.params.q = 'jarvis: get to the choppa';
+      // Digest
       scope.$digest();
     })
   );
 
   it('should have attributes', function() {
-    expect(template.isolateScope().searchPage).to.be.equal('1');
-    expect(template.isolateScope().searchSize).to.be.equal('2');
-    expect(template.isolateScope().invenioSearchQuery).to.be.equal('jarvis: make me a coffee');
+    // Expect the place holder to have value
+    expect(template.scope().placeholder).to.be.equal('Type something');
   });
 
   it('should change the query', function() {
-    template.find('input').val('jarvis: search');
-    // Change the query
-    scope.invenioSearchQuery = 'jarvis: search ultron';
-    // Digest query
+    // Update the input
+    scope.vm.userQuery = 'jarvis:call Jessica Jones';
+    template.find('input').val('jarvis:call Jessica Jones');
+    template.scope().updateQuery();
     scope.$digest();
-    expect(template.isolateScope().invenioSearchQuery).to.be.equal('jarvis: search ultron');
+
+    expect(template.find('input').val()).to.be.equal(
+      scope.vm.invenioSearchArgs.params.q
+    );
+
+    $httpBackend.flush();
   });
 });

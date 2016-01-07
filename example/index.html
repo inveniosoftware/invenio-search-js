@@ -1,4 +1,4 @@
-<!-- Copyright (C) 2015 CERN.
+<!-- Copyright (C) 2015, 2016 CERN.
 
   Invenio is free software; you can redistribute it
   and/or modify it under the terms of the GNU General Public License as
@@ -22,58 +22,64 @@
 <html>
   <head>
     <script src="./node_modules/angular/angular.js"></script>
-    <script src="/src/invenio-search-js/invenioSearchJs.module.js"></script>
+    <script src="/src/invenio-search-js/invenioSearch.module.js"></script>
     <link href="./node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet"/>
+    <style>
+      body {
+        padding-top: 70px;
+      }
+    </style>
   </head>
   <body>
     <div class="container">
       <div class="row">
         <div class="col-md-12">
-          <h1 class="legend">Invenio Search Demo</h1>
-          <hr />
-          <div ng-app="invenioSearchJs">
-            <div ng-controller="invenioSearchController as searching">
-               <!-- Searchbar -->
-                <div invenio-search-bar
-                    invenio-search-query="searching.invenioSearchQuery"
-                    invenio-search-args="searching.invenioSearchArgs"
-                    invenio-search-do="searching.invenioDoSearch(query)"
-                    search-doctype=""
-                    search-method="GET"
-                    search-endpoint="http://localhost:9200/_search"
-                    search-extra-params='{"hello":"a"}'
-                    search-page="1"
-                    search-size="5"
-                    search-bar-template="/src/invenio-search-js/templates/invenioSearchBar.html"
-                    search-bar-input-placeholder="Type something"
-                ></div>
-                <div class="text-center">
-                  <div invenio-search-results-count
-                    invenio-search-items="searching.invenioResults"
-                    search-count-template="/src/invenio-search-js/templates/invenioSearchResultsCount.html"
-                  ></div>
-                </div>
-                <!-- Loading -->
-                <div invenio-search-results-loading
-                    invenio-search-loading="searching.invenioSearchLoading"
-                    search-loading-template="/src/invenio-search-js/templates/invenioSearchLoading.html"
-                    search-loading-message="Loading......"
-                ></div>
-                <!-- Search results-->
-                <div invenio-search-results
-                  invenio-search-items="searching.invenioResults.hits.hits"
-                  search-results-template="/src/invenio-search-js/templates/invenioSearchResults.html"
-                  search-results-record-template="/src/invenio-search-js/templates/invenioSearchResultsRecord.html"
-                ></div>
-                <!-- Search pagination -->
-                <div invenio-search-results-pagination
-                  invenio-search-args="searching.invenioSearchArgs"
-                  invenio-search-do="searching.invenioDoSearch(query)"
-                  invenio-search-items="searching.invenioResults"
-                  invenio-search-query="searching.invenioSearchQuery"
-                  search-pagination-template="/src/invenio-search-js/templates/invenioSearchResultsPagination.html"
-                ></div>
-            </div>
+          <div class="jumbotron">
+            <h1>Invenio Search Demo</h1>
+          </div>
+          <div ng-app="invenioSearch">
+            <invenio-search search-endpoint="http://localhost:5000/api">
+              <div class="row">
+                <div class="col-md-3">
+                  <invenio-search-facets
+                   template="/src/invenio-search-js/templates/facets.html"
+                  ></invenio-search-facets>
+                </div> <!-- /.col-md-3 -->
+                <div class="col-md-9">
+                  <!-- SEARCHBAR -->
+                  <invenio-search-bar
+                   template="/src/invenio-search-js/templates/searchBar.html"
+                   placeholder="Start typing">
+                  </invenio-search-bar>
+                  <!-- ERROR -->
+                  <invenio-search-error
+                   template="/src/invenio-search-js/templates/error.html"
+                   message="Error.">
+                  </invenio-search-error>
+                  <!-- LOADING -->
+                  <invenio-search-loading
+                   template="/src/invenio-search-js/templates/loading.html"
+                   message="Loading...">
+                  </invenio-search-loading>
+                  <!-- COUNT -->
+                  <center>
+                    <invenio-search-count
+                    template="/src/invenio-search-js/templates/count.html">
+                    </invenio-search-count>
+                  </center>
+                  <!-- RESULTS -->
+                  <invenio-search-results
+                   template="/src/invenio-search-js/templates/results.html">
+                  </invenio-search-results>
+                  <!-- PAGINATION -->
+                  <center>
+                    <invenio-search-pagination
+                     template="/src/invenio-search-js/templates/pagination.html">
+                    </invenio-search-pagination>
+                  </center>
+                </div> <!-- /.col-md-12 -->
+              </div>
+            </invenio-search>
           </div>
         </div>
       </div>

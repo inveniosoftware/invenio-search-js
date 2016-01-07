@@ -1,6 +1,6 @@
 /*
  * This file is part of Invenio.
- * Copyright (C) 2015 CERN.
+ * Copyright (C) 2015, 2016 CERN.
  *
  * Invenio is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -23,44 +23,50 @@
 
 'use strict';
 
-describe('Check search count directive', function() {
+describe('Check search error directive', function() {
 
   var $compile;
+  var $httpBackend;
   var $rootScope;
   var scope;
   var template;
+  var controller;
 
   // load the templates
   beforeEach(angular.mock.module('templates'));
 
   // Inject the angular module
-  beforeEach(angular.mock.module('invenioSearchJs'));
+  beforeEach(angular.mock.module('invenioSearch'));
 
   beforeEach(
-    inject(function(_$compile_, _$rootScope_) {
+    inject(function(_$compile_, _$rootScope_, _$httpBackend_) {
 
       $compile = _$compile_;
+      $httpBackend = _$httpBackend_;
       $rootScope = _$rootScope_;
 
       scope = $rootScope;
-      scope.items = {
-        hits: {
-          total: 5,
-        }
-      };
 
-      template = '<invenio-search-results-count ' +
-        'invenio-search-items="items" ' +
-        'search-count-template="src/invenio-search-js/templates/invenioSearchResultsCount.html"' +
-        '></invenio-search-results-count>';
+      template = '<invenio-search search-endpoint="/api"> ' +
+       '<invenio-search-error message="Yo error" template="src/invenio-search-js/templates/error.html">' +
+       '</invenio-search-error>' +
+       '</invenio-search>';
+
+      // Expect a request
+      $httpBackend.whenGET('/api?page=1&size=20').respond(200, {success: true});
 
       template = $compile(template)(scope);
+      scope.$digest();
+
+      scope.vm.invenioSearchError = {
+        message: 'Error'
+      };
       scope.$digest();
     })
   );
 
   it('should have attributes', function() {
-    expect(template.isolateScope().invenioSearchItems.hits.total).to.be.equal(5);
-    expect(template.find('ng-pluralize').text()).to.be.equal('5 records found.');
+    expect(template.scope().vm.invenioSearchError.message).to.be.equal('Error');
+    expect(template.find('div.alert').text().trim()).to.be.equal('Yo error');
   });
 });
