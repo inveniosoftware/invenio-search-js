@@ -2,63 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Home - Documentation</title>
+    <title>JSDoc: Index</title>
 
-    <script src="scripts/prettify/prettify.js"></script>
-    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
+
 <body>
 
-<input type="checkbox" id="nav-trigger" class="nav-trigger" />
-<label for="nav-trigger" class="navicon-button x">
-  <div class="navicon"></div>
-</label>
-
-<label for="nav-trigger" class="overlay"></label>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="invenioSearch.html">invenioSearch</a><ul class='methods'><li data-type='method'><a href="invenioSearch.html#.link">link</a></li></ul></li><li><a href="invenioSearchAPI.html">invenioSearchAPI</a><ul class='methods'><li data-type='method'><a href="invenioSearchAPI.html#.error">error</a></li><li data-type='method'><a href="invenioSearchAPI.html#.search">search</a></li><li data-type='method'><a href="invenioSearchAPI.html#.success">success</a></li></ul></li><li><a href="invenioSearchBar.html">invenioSearchBar</a><ul class='methods'><li data-type='method'><a href="invenioSearchBar.html#.link">link</a></li><li data-type='method'><a href="invenioSearchBar.html#.templateUrl">templateUrl</a></li><li data-type='method'><a href="invenioSearchBar.html#.updateQuery">updateQuery</a></li></ul></li><li><a href="invenioSearchConfiguration.html">invenioSearchConfiguration</a></li><li><a href="invenioSearchController.html">invenioSearchController</a><ul class='methods'><li data-type='method'><a href="invenioSearchController.html#.invenioDoSearch">invenioDoSearch</a></li><li data-type='method'><a href="invenioSearchController.html#.invenioSearchErrorHandler">invenioSearchErrorHandler</a></li><li data-type='method'><a href="invenioSearchController.html#.invenioSearchGetUrlArgs">invenioSearchGetUrlArgs</a></li><li data-type='method'><a href="invenioSearchController.html#.invenioSearchLocationChange">invenioSearchLocationChange</a></li><li data-type='method'><a href="invenioSearchController.html#.invenioSearchSetUrlArgs">invenioSearchSetUrlArgs</a></li></ul></li><li><a href="invenioSearchCount.html">invenioSearchCount</a><ul class='methods'><li data-type='method'><a href="invenioSearchCount.html#.templateUrl">templateUrl</a></li></ul></li><li><a href="invenioSearchError.html">invenioSearchError</a><ul class='methods'><li data-type='method'><a href="invenioSearchError.html#.link">link</a></li><li data-type='method'><a href="invenioSearchError.html#.templateUrl">templateUrl</a></li></ul></li><li><a href="invenioSearchFacets.html">invenioSearchFacets</a><ul class='methods'><li data-type='method'><a href="invenioSearchFacets.html#.templateUrl">templateUrl</a></li></ul></li><li><a href="invenioSearchFacetsClick.html">invenioSearchFacetsClick</a><ul class='methods'><li data-type='method'><a href="invenioSearchFacetsClick.html#.link">link</a></li></ul></li><li><a href="invenioSearchHandler.html">invenioSearchHandler</a><ul class='methods'><li data-type='method'><a href="invenioSearchHandler.html#.get">get</a></li><li data-type='method'><a href="invenioSearchHandler.html#.set">set</a></li></ul></li><li><a href="invenioSearchLoading.html">invenioSearchLoading</a><ul class='methods'><li data-type='method'><a href="invenioSearchLoading.html#.link">link</a></li><li data-type='method'><a href="invenioSearchLoading.html#.templateUrl">templateUrl</a></li></ul></li><li><a href="invenioSearchPagination.html">invenioSearchPagination</a><ul class='methods'><li data-type='method'><a href="invenioSearchPagination.html#.link">link</a></li><li data-type='method'><a href="invenioSearchPagination.html#.templateUrl">templateUrl</a></li></ul></li><li><a href="invenioSearchResults.html">invenioSearchResults</a><ul class='methods'><li data-type='method'><a href="invenioSearchResults.html#.link">link</a></li></ul></li></ul>
-</nav>
-
 <div id="main">
-    
+
+    <h1 class="page-title">Index</h1>
 
     
-
-
-
-    
-
-
-
-
-
-
-
 
 
     
 
 
-    <section class="readme">
-        <article><h1>Invenio-Search-Js</h1><p><a href="https://travis-ci.org/inveniosoftware/invenio-search-js"><img src="https://img.shields.io/travis/inveniosoftware/invenio-search-js.svg" alt="Build Status"></a>
-<a href="https://coveralls.io/r/inveniosoftware/invenio-search-js"><img src="https://img.shields.io/coveralls/inveniosoftware/invenio-search-js.svg" alt="Coverage"></a>
-<a href="https://github.com/inveniosoftware/invenio-search-js/releases"><img src="https://img.shields.io/github/tag/inveniosoftware/invenio-search-js.svg" alt="Release"></a>
-<a href="https://github.com/inveniosoftware/invenio-search-js/blob/master/LICENSE"><img src="https://img.shields.io/github/license/inveniosoftware/invenio-search-js.svg" alt="LICENSE"></a></p>
-<p>Invenio-Search client library for building the web UI.</p>
-<h2>Installation</h2><pre class="prettyprint source"><code>$ npm i</code></pre><h2>Demo</h2><pre class="prettyprint source"><code>$ cd example; npm install; cd ..
-$ npm run-script demo</code></pre><p>Navigate to <code>http://localhost:8000</code> to see the <code>demo</code>.</p>
-<h2>Tests</h2><pre class="prettyprint source"><code>$ npm test</code></pre><h2>Docs</h2><pre class="prettyprint source"><code>$ # build
-$ npm run-script docs
-$ # read
-$ open docs/index.html</code></pre><h2>How to use?</h2><p>Check out the <code>example/</code> to see how to configure your app.</p></article>
-    </section>
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+    
+
+
+
 
 
 
@@ -67,13 +47,17 @@ $ open docs/index.html</code></pre><h2>How to use?</h2><p>Check out the <code>ex
 
 </div>
 
-<br class="clear">
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Namespaces</h3><ul><li><a href="Controllers.InvenioSearch.html">InvenioSearch</a></li><li><a href="Directives.InvenioSearchBar.html">InvenioSearchBar</a></li><li><a href="Directives.InvenioSearchResults.html">InvenioSearchResults</a></li><li><a href="Directives.InvenioSearchResultsCount.html">InvenioSearchResultsCount</a></li><li><a href="Directives.InvenioSearchResultsError.html">InvenioSearchResultsError</a></li><li><a href="Directives.InvenioSearchResultsFacets.html">InvenioSearchResultsFacets</a></li><li><a href="Directives.InvenioSearchResultsLoading.html">InvenioSearchResultsLoading</a></li><li><a href="Directives.InvenioSearchResultsPagination.html">InvenioSearchResultsPagination</a></li><li><a href="Services.InvenioSearchAPI.html">InvenioSearchAPI</a></li></ul>
+</nav>
+
+<br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Jan 14 2016 12:09:55 GMT+0000 (UTC) using the Minami theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Thu Jan 14 2016 12:13:18 GMT+0000 (UTC)
 </footer>
 
-<script>prettyPrint();</script>
-<script src="scripts/linenumber.js"></script>
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
 </body>
 </html>
