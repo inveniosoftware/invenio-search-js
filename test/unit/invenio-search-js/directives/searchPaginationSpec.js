@@ -46,6 +46,7 @@ describe('Check search pagination directive', function() {
 
       scope = $rootScope;
 
+      $httpBackend.whenGET('/api?page=7&q=jarvis:+hello+do+you+here+me%3F&size=20').respond(200, {success: true});
       $httpBackend.whenGET('/api?page=1&q=jarvis:+hello+do+you+here+me%3F&size=3').respond(200, {success: true});
       $httpBackend.whenGET('/api?page=3&q=jarvis:+hello+do+you+here+me%3F&size=3').respond(200, {success: true});
       $httpBackend.whenGET('/api?page=4&q=jarvis:+hello+do+you+here+me%3F&size=3').respond(200, {success: true});
@@ -54,7 +55,9 @@ describe('Check search pagination directive', function() {
       $httpBackend.whenGET('/api?page=8&q=jarvis:+hello+do+you+here+me%3F&size=3').respond(200, {success: true});
 
       template = '<invenio-search search-endpoint="/api"> ' +
-       '<invenio-search-pagination template="src/invenio-search-js/templates/pagination.html">' +
+       '<invenio-search-pagination ' +
+       'adjacent-size="4" ' +
+       'template="src/invenio-search-js/templates/pagination.html"> ' +
        '</invenio-search-pagination>' +
        '</invenio-search>';
 
@@ -93,8 +96,8 @@ describe('Check search pagination directive', function() {
       }
     };
     scope.$digest();
-    expect(template.find('li').eq(10).text().trim()).to.be.equal('..');
-    expect(template.find('li').eq(4).text().trim()).to.be.equal('..');
+    expect(template.find('li').eq(10).text().trim()).to.be.equal('11');
+    expect(template.find('li').eq(4).text().trim()).to.be.equal('5');
   });
 
   it('should have one li with dots before the last page', function() {
@@ -103,8 +106,8 @@ describe('Check search pagination directive', function() {
         total: 34
       }
     };
-    scope.$digest()
-    expect(template.find('li').eq(9).text().trim()).to.be.equal('..');
+    scope.$digest();
+    expect(template.find('li').eq(9).text().trim()).to.be.equal('8');
   });
 
   it('should have one li with dots before the second page', function() {
@@ -118,8 +121,8 @@ describe('Check search pagination directive', function() {
         total: 30
       }
     };
-    scope.$digest()
-    expect(template.find('li').eq(4).text().trim()).to.be.equal('..');
+    scope.$digest();
+    expect(template.find('li').eq(4).text().trim()).to.be.equal('3');
   });
 
   it('should not have li with dots', function() {
@@ -128,7 +131,7 @@ describe('Check search pagination directive', function() {
         total: 24
       }
     };
-    scope.$digest()
+    scope.$digest();
     expect(template.find('li').eq(4).text().trim()).to.be.equal('3');
     expect(template.find('li').eq(9).text().trim()).to.be.equal('8');
   });
@@ -144,7 +147,7 @@ describe('Check search pagination directive', function() {
         total: 24
       }
     };
-    scope.$digest()
+    scope.$digest();
     expect(template.scope().paginationHelper.previous()).to.be.equal(4);
     expect(template.scope().paginationHelper.next()).to.be.equal(6);
 
@@ -154,7 +157,7 @@ describe('Check search pagination directive', function() {
       size: 3,
       q: 'jarvis: hello do you here me?'
     };
-    scope.$digest()
+    scope.$digest();
     expect(template.scope().paginationHelper.next()).to.be.equal(8);
 
     // if current = first should return the total
@@ -163,13 +166,13 @@ describe('Check search pagination directive', function() {
       size: 3,
       q: 'jarvis: hello do you here me?'
     };
-    scope.$digest()
+    scope.$digest();
     expect(template.scope().paginationHelper.previous()).to.be.equal(1);
   });
 
   it('should return 0 total if results', function() {
     scope.vm.invenioSearchResults = {};
-    scope.$digest()
+    scope.$digest();
     expect(template.scope().paginationHelper.total()).to.be.equal(0);
   });
 
@@ -182,20 +185,35 @@ describe('Check search pagination directive', function() {
 
     // Change page to bigger than last one
     scope.paginationHelper.changePage(10);
-    scope.$digest()
+    scope.$digest();
 
     expect(scope.vm.invenioSearchArgs.params.page).to.be.equal(4);
 
     // Change page to lowest than first one
     template.scope().paginationHelper.changePage(-21);
-    scope.$digest()
+    scope.$digest();
 
     expect(scope.vm.invenioSearchArgs.params.page).to.be.equal(1);
 
     // Change page to normal
     scope.paginationHelper.changePage(3);
-    scope.$digest()
+    scope.$digest();
 
     expect(scope.vm.invenioSearchArgs.params.page).to.be.equal(3);
+  });
+
+  it('should be 5th of the list', function() {
+    scope.vm.invenioSearchArgs.params = {
+      page: 7,
+      size: 20,
+      q: 'jarvis: hello do you here me?'
+    };
+    scope.vm.invenioSearchResults = {
+      hits: {
+        total: 226
+      }
+    };
+    scope.$digest();
+    expect(template.find('li').eq(5).text().trim()).to.be.equal('7');
   });
 });

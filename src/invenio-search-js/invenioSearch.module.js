@@ -693,6 +693,8 @@
    * @example
    *    Usage:
    *    <invenio-search-pagination
+   *     show-go-to-first-last='true'
+   *     adjacent-size='4'
    *     template='TEMPLATE_PATH'>
    *        ... Any children directives
    *    </invenio-search-pagination>
@@ -711,6 +713,8 @@
     function link(scope, element, attrs, vm) {
        // Watch when `invenioSearchArgs` changes and fire a new search
       scope.paginatePages = [];
+      scope.adjacentSize = attrs.adjacentSize || 4;
+      scope.showGoToFirstLast = attrs.showGoToFirstLast || false;
 
       scope.$watch('vm.invenioSearchArgs.params.page', function(current, next) {
         if (current !== next) {
@@ -747,41 +751,6 @@
       }
 
       /**
-       * Add the last or end items in our paging list
-       * @memberof link
-       * @param {int} pageCount - The last page number or total page count.
-       * @param {int} prev - The previous page number in the paging.
-       */
-      function addLast(pageCount, prev) {
-        if (prev !== pageCount - 2) {
-          addDots();
-        }
-        addRange(pageCount - 1, pageCount);
-      }
-
-      /**
-       * Add dots
-       * @memberof link
-       */
-      function addDots() {
-        scope.paginatePages.push({
-          value: '..'
-        });
-      }
-
-      /**
-       * Add the first or beginning items in our paging list
-       * @memberof link
-       * @param {int} next - The next page number in sequence.
-       */
-      function addFirst(next) {
-        addRange(1, 2);
-        if (next !== 3) {
-          addDots();
-        }
-      }
-
-      /**
        * Calculate the numbers
        * @memberof link
        */
@@ -789,13 +758,13 @@
         // Reset pages
         scope.paginatePages = [];
         // How many neighbours to show before and after the current page
-        var adjacent = 2;
+        var adjacent = scope.adjacentSize;
         // Get total pages based on the results shown by page
         var pageCount = total();
         // Get the current page
         var _current = current();
         // Display the adjacent a1 a2 a3 + current + a5 a6 a7
-        var adjacentSize = (2 * adjacent) + 2;
+        var adjacentSize = (2 * adjacent);
 
         // Pages to show in the pagination
         var start, finish;
@@ -808,17 +777,13 @@
             start = 1;
             finish = 1 + adjacentSize;
             addRange(start, finish);
-            addLast(pageCount, finish);
           } else if (_current < pageCount - (adjacent + 2)) {
             start = _current - adjacent;
             finish = _current + adjacent;
-            addFirst(start);
             addRange(start, finish);
-            addLast(pageCount, finish);
           } else {
             start = pageCount - adjacentSize;
             finish = pageCount;
-            addFirst(start);
             addRange(start, finish);
           }
         }
@@ -951,7 +916,13 @@
      * @param {service} attrs - Attribute of this element.
      * @example
      *    Minimal template `template.html` usage
-     *        <input type="checkbox" value="{{ value }}" /> {{ value }}
+     *      <ul class="pagination" ng-if="vm.invenioSearchResults.hits.total">
+     *        <li ng-class="paginationHelper.getPageClass(page.value)"
+     *            ng-repeat="page in paginatePages">
+     *          <a href="#" ng-click="paginationHelper.changePage(page.value)"
+     *             alt="{{ page.title }}">{{ page.value }}</a>
+     *        </li>
+     *      </ul>
      */
     function templateUrl(element, attrs) {
       return attrs.template;
