@@ -89,7 +89,7 @@
     function invenioSearchSetUrlArgs(newParameters, currentParameters) {
       // If the page haven't changed make sure that we are back to page 1
       if (newParameters !== undefined) {
-        if (newParameters.page === currentParameters.page) {
+        if (newParameters.q !== currentParameters.q) {
           vm.invenioSearchArgs.params.page = 1;
         }
       }
