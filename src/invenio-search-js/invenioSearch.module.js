@@ -959,6 +959,263 @@
 
   }
 
+  /**
+   * @ngdoc directive
+   * @name invenioSearchSelectBox
+   * @description
+   *    The invenioSearchSelectBox directive
+   * @namespace invenioSearchSelectBox
+   * @example
+   *    Usage:
+   *    <invenio-search-select-box
+   *     sort-key="sort"
+   *     default-option="date"
+   *     available-options='{
+   *        "options": [
+   *          {
+   *            "title": "Title",
+   *            "value": "title"
+   *          },
+   *          {
+   *            "title": "Date",
+   *            "value": "date"
+   *          }
+   *          ]}'
+   *     template='TEMPLATE_PATH'>
+   *        ... Any children directives
+   *    </invenio-search-select-box>
+   */
+  function invenioSearchSelectBox() {
+
+    // Functions
+
+    /**
+     * Force apply the attributes to the scope
+     * @memberof invenioSearchSelectBox
+     * @param {service} scope -  The scope of this element.
+     * @param {service} element - Element that this direcive is assigned to.
+     * @param {service} attrs - Attribute of this element.
+     * @param {invenioSearchController} vm - Invenio search controller.
+     */
+    function link(scope, element, attrs, vm) {
+
+      /**
+       * Set sort parameter
+       * @param {String} key - The sort key.
+       * @param {String} value - The sort value.
+       * @memberof link
+       */
+      function setSortKey(key, value) {
+        var params = {};
+        params[key] = value || null;
+        vm.invenioSearchArgs.params = angular.merge(
+          vm.invenioSearchArgs.params, params
+        );
+      }
+
+      /**
+       * Handle select box on change the element
+       * @param {String} newValue - The new sort value.
+       * @param {String} oldValue - The current soert value.
+       * @memberof link
+       */
+      function onChange(newValue, oldValue) {
+        // Check if is passed from parameters url
+        setSortKey(
+          scope.data.sortKey, scope.data.selectedOption
+        );
+      }
+
+      /**
+       * Check if the element is selected
+       * @param {String} value - The value to be checked.
+       * @memberof link
+       */
+      function isSelected(value) {
+        // Ignore if `-` character is infront
+        var check = vm.invenioSearchArgs.params[scope.data.sortKey] || '';
+        if (check.indexOf('-') > -1){
+          check = check.slice(1, check.length);
+        }
+        return  check === value || false;
+      }
+
+      // Attach to scope
+      scope.data  = {
+        availableOptions: JSON.parse(attrs.availableOptions || '{}'),
+        defaultOption: attrs.defaultOption || null,
+        selectedOption: vm.invenioSearchArgs.params[attrs.sortKey] || attrs.defaultOption ||  null,
+        sortKey:  attrs.sortKey || 'sort',
+      };
+      // Attach the function to check if is selected or not
+      scope.isSelected = isSelected;
+
+      // When scope.data has changed
+      scope.$watchCollection(
+        'data.selectedOption', onChange
+      );
+    }
+
+    /**
+     * Choose template for search loading
+     * @memberof invenioSearchSelectBox
+     * @param {service} element - Element that this direcive is assigned to.
+     * @param {service} attrs - Attribute of this element.
+     * @example
+     *    Minimal template `template.html` usage
+     *      <select ng-model="data.selectedOption">
+     *        <option ng-repeat="option in data.availableOptions.options"
+     *          value="{{ option.value }}"
+     *          ng-selected="isSelected(option.value)"
+     *        >{{ option.title }}</option>
+     *      </select>
+     */
+    function templateUrl(element, attrs) {
+      return attrs.template;
+    }
+
+    ////////////
+
+    return {
+      restrict: 'AE',
+      require: '^invenioSearch',
+      templateUrl: templateUrl,
+      link: link,
+    };
+  }
+
+  /**
+   * @ngdoc directive
+   * @name invenioSearchSortOrder
+   * @description
+   *    The invenioSearchSortOrder directive
+   * @namespace invenioSearchSortOrder
+   * @example
+   *    Usage:
+   *    <invenio-search-sort-order
+   *     label="Z->A"
+   *     sort-key="sort"
+   *     template='TEMPLATE_PATH'>
+   *        ... Any children directives
+   *    </invenio-search-sort-order>
+   */
+  function invenioSearchSortOrder($timeout) {
+
+    // Functions
+
+    /**
+     * Force apply the attributes to the scope
+     * @memberof invenioSearchSelectBox
+     * @param {service} scope -  The scope of this element.
+     * @param {service} element - Element that this direcive is assigned to.
+     * @param {service} attrs - Attribute of this element.
+     * @param {invenioSearchController} vm - Invenio search controller.
+     */
+    function link(scope, element, attrs, vm) {
+
+      /**
+       * Set sort parameter
+       * @param {String} key - The sort key.
+       * @param {String} value - The sort value.
+       * @memberof link
+       */
+      function setSortKey(key, value) {
+        var params = {};
+        params[key] = value || null;
+        $timeout(function() {
+          vm.invenioSearchArgs.params = angular.merge(
+            vm.invenioSearchArgs.params, params
+          );
+        }, 0);
+      }
+
+      /**
+       * Check if url has sorting order
+       * @memberof link
+       */
+      function hasSortingOrder() {
+        return (
+            vm.invenioSearchArgs.params[attrs.sortKey] || ''
+          ).indexOf('-') === -1 ? false : true;
+      }
+
+      /**
+       * Handle click
+       * @memberof link
+       */
+      function handleClick() {
+        var sortValue = [];
+        var value = vm.invenioSearchArgs.params[scope.sortKey] || '';
+        if (value) {
+          if (!hasSortingOrder()) {
+            sortValue.push('-');
+          } else {
+            value = value.slice(1, value.length);
+          }
+          // Change the button state
+          scope.isPressed = !scope.isPressed;
+          sortValue.push(value);
+          setSortKey(
+            scope.sortKey, sortValue.join('')
+          );
+        }
+      }
+
+      // on element click update invenioSearchArgs.params
+      scope.sortKey = attrs.sortKey;
+      scope.label = attrs.label;
+
+      // Check if the url has sorting option
+      if (hasSortingOrder()) {
+        scope.isPressed = true;
+      }
+
+      function onChange(newValue, oldValue) {
+        if (!angular.equals(newValue[scope.sortKey], oldValue[scope.sortKey])){
+          if (!hasSortingOrder()) {
+            // Change the button state
+            scope.isPressed = false;
+          }
+        }
+      }
+      // When scope.data has changed
+      scope.$watchCollection(
+        'vm.invenioSearchArgs.params', onChange
+      );
+      // When scope.data has changed
+      scope.handleClick = handleClick;
+    }
+
+    /**
+     * Choose template for search loading
+     * @memberof invenioSearchSelectBox
+     * @param {service} element - Element that this direcive is assigned to.
+     * @param {service} attrs - Attribute of this element.
+     * @example
+     *    Minimal template `template.html` usage
+     *      <button
+     *       ng-click="handleClick()"
+     *       ng-class="{'active': isPressed}">
+     *        {{ label }}
+     *      </button>
+     */
+    function templateUrl(element, attrs) {
+      return attrs.template;
+    }
+
+    ////////////
+
+    return {
+      restrict: 'AE',
+      require: '^invenioSearch',
+      templateUrl: templateUrl,
+      link: link,
+    };
+  }
+
+  // Inject the necessary angular services
+  invenioSearchSortOrder.$inject = ['$timeout'];
+
   ////////////
 
   // Services
@@ -1108,8 +1365,11 @@
     .directive('invenioSearchFacets', invenioSearchFacets)
     .directive('invenioSearchResults', invenioSearchResults)
     .directive('invenioSearchLoading', invenioSearchLoading)
+    .directive('invenioSearchSortOrder', invenioSearchSortOrder)
+    .directive('invenioSearchSelectBox', invenioSearchSelectBox)
     .directive('invenioSearchPagination', invenioSearchPagination)
     .directive('invenioSearchFacetsClick', invenioSearchFacetsClick);
+
 
   // Setup everyhting
   angular.module('invenioSearch', [

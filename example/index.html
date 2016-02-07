@@ -51,6 +51,23 @@
                    template="/src/invenio-search-js/templates/searchBar.html"
                    placeholder="Start typing">
                   </invenio-search-bar>
+                  <div class="text-right">
+                    <!-- SORT ORDER -->
+                    <invenio-search-sort-order
+                     label="Z->A"
+                     sort-key="sort"
+                     template="/src/invenio-search-js/templates/toggleButton.html"
+                    >
+                    </invenio-search-sort-order>
+                    <!-- SORT -->
+                    <invenio-search-select-box
+                     sort-key="sort"
+                     default-option="date"
+                     available-options='{"options": [{"title": "Title", "value": "title"}, {"title": "Date", "value": "date"}]}'
+                     template="/src/invenio-search-js/templates/selectBox.html"
+                    >
+                    </invenio-search-select-box>
+                  </div>
                   <!-- ERROR -->
                   <invenio-search-error
                    template="/src/invenio-search-js/templates/error.html"

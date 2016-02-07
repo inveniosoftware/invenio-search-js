@@ -50,7 +50,7 @@ var sourceFiles = [
 ];
 
 var templates = [
-  path.join(sourceDirectory, '/**/templates/*.html')
+  path.join(sourceDirectory, '/**/templates/**/*.html')
 ];
 
 // Get licenses
