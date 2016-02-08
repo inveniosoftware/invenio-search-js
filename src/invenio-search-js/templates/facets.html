@@ -5,7 +5,7 @@
     </div>
     <div class="panel-body">
       <div ng-repeat="item in value.buckets">
-        <input type="checkbox" invenio-search-facets-click /> {{ item.key }} ({{ item.doc_count }})
+        <input type="checkbox" ng-click="handleClick()" invenio-search-facets-click /> {{ item.key }} ({{ item.doc_count }})
       </div>
     </div>
   </div>

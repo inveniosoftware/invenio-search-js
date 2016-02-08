@@ -622,7 +622,7 @@
    *        ... Any children directives
    *    </invenio-search-facets-click>
    */
-  function invenioSearchFacetsClick($timeout) {
+  function invenioSearchFacetsClick() {
 
     // Functions
 
@@ -639,7 +639,7 @@
       var value = scope.item.key.trim();
 
       // Check if the box should be checked
-      if (vm.invenioSearchArgs.params[key] === value) {
+      if ((vm.invenioSearchArgs.params[key] || []).indexOf(value) > -1) {
         element[0].checked = true;
       }
 
@@ -648,16 +648,26 @@
        * @memberof link
        */
       function handleClick() {
+        var current = vm.invenioSearchArgs.params[key] || [];
+        // Make sure it's an object
+        current = (typeof current === 'string') ? [current] : current;
+        // Reset parameters
+        vm.invenioSearchArgs.params[key] = [];
+        if (element[0].checked && current.indexOf(value) === -1) {
+          // Add the value in the list
+          current.push(value);
+        } else {
+          // Just remove it from the list
+          current.splice(current.indexOf(value), 1);
+        }
+        // Preapare object for merge
         var params = {};
-        params[key]= (element[0].checked) ? value : null;
-        $timeout(function() {
-          vm.invenioSearchArgs.params = angular.merge(
-            vm.invenioSearchArgs.params, params
-          );
-        }, 0);
+        params[key] = current;
+        vm.invenioSearchArgs.params = angular.merge(
+          vm.invenioSearchArgs.params, params
+        );
       }
-      // on element click update invenioSearchArgs.params
-      element.bind('click', handleClick);
+      scope.handleClick = handleClick;
     }
 
     ////////////

@@ -48,7 +48,10 @@ describe('Check search facets directive', function() {
 
       // Expect a request
       $httpBackend.whenGET('/api?batman=Batman+is+Bruce+Wayne&page=1&q=jarvis&size=20').respond(200, {success: true});
+      $httpBackend.whenGET('/api?batman=Batman+is+Bruce+Wayne&page=1&q=jarvis&size=20&superman=Superman+is+Magneto').respond(200, {success: true});
       $httpBackend.whenGET('/api?batman=Batman+is+Bruce+Wayne&page=1&q=jarvis&size=20&superman=Superman+is+Clark+Kent').respond(200, {success: true});
+      $httpBackend.whenGET('/api?batman=Batman+is+Bruce+Wayne&page=1&q=jarvis&size=20&superman=Superman+is+Clark+Kent&superman=Superman+is+Magneto').respond(200, {success: true});
+      $httpBackend.whenGET('/api?batman=Batman+is+Bruce+Wayne&batman=Batman+is+Zebediah+Killgrave&page=1&q=jarvis&size=20&superman=Superman+is+Magneto').respond(200, {success: true});
 
       template = '<invenio-search search-endpoint="/api"> ' +
        '<invenio-search-facets template="src/invenio-search-js/templates/facets.html">' +
@@ -101,20 +104,30 @@ describe('Check search facets directive', function() {
   });
 
   it('should have the facet checked if is on query', inject(function($timeout) {
-    // Select the third option
+    // Select the third and forth option option
     template.find('[type=checkbox]').eq(2)[0].checked = true;
+    template.find('[type=checkbox]').eq(3)[0].checked = true;
     template.find('[type=checkbox]').eq(2).triggerHandler('click');
+    template.find('[type=checkbox]').eq(3).triggerHandler('click');
     expect(template.find('[type=checkbox]').eq(2)[0].checked).to.be.equal(true);
+    expect(template.find('[type=checkbox]').eq(3)[0].checked).to.be.equal(true);
 
-    // Seee if the parameters have been updated
-    $timeout.flush();
-    expect(scope.vm.invenioSearchArgs.params.superman).to.be.equal('Superman is Clark Kent');
+    // See if the parameters have been updated
+    expect(scope.vm.invenioSearchArgs.params.superman[0]).to.be.equal('Superman is Clark Kent');
+    expect(scope.vm.invenioSearchArgs.params.superman[1]).to.be.equal('Superman is Magneto');
+    expect(scope.vm.invenioSearchArgs.params.superman.length).to.be.equal(2);
 
     // Now uncheck and see again
     template.find('[type=checkbox]').eq(2)[0].checked = false;
     template.find('[type=checkbox]').eq(2).triggerHandler('click');
     expect(template.find('[type=checkbox]').eq(2)[0].checked).to.be.equal(false);
-    $timeout.flush();
+    expect(scope.vm.invenioSearchArgs.params.superman.length).to.be.equal(1);
+
+    // Batman key should be an object before updated
+    expect(template.find('[type=checkbox]').eq(0)[0].checked).to.be.equal(true);
+    template.find('[type=checkbox]').eq(1)[0].checked = true;
+    template.find('[type=checkbox]').eq(1).triggerHandler('click');
+    expect(scope.vm.invenioSearchArgs.params.batman.length).to.be.equal(2);
   }));
 
   it('should have the facet checked if is on url', function() {
