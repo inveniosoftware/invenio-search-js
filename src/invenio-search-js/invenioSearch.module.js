@@ -155,7 +155,7 @@
       }
 
       invenioSearchAPI
-        .search(vm.invenioSearchArgs)
+        .search(vm.invenioSearchArgs, vm.invenioSearchHiddenParams)
         .then(successfulRequest, erroredRequest)
         .finally(clearRequest);
     }
@@ -232,6 +232,7 @@
    *    Usage:
    *    <invenio-search
    *     search-endpoint='SEARCH_PROVIDER_URL'
+   *     search-hidden-params='{"collection": "Collection"}'>
    *     search-extra-params='{"page": 2, "size": 5}'>
    *        ... Any children directives
    *    </invenio-search>
@@ -263,6 +264,10 @@
       var urlParams = {
         params: vm.invenioSearchGetUrlArgs()
       };
+
+      vm.invenioSearchHiddenParams = JSON.parse(
+        attrs.searchHiddenParams  || '{}'
+      );
 
       // Update arguments
       vm.invenioSearchArgs = angular.merge(
@@ -1218,7 +1223,7 @@
      * @param {Object} args - The search request parameters.
      * @returns {service} promise
      */
-    function search(args) {
+    function search(args, hidden) {
 
       // Initialize the promise
       var deferred = $q.defer();
@@ -1243,8 +1248,13 @@
         deferred.reject(response);
       }
 
+      // Place all parameters together
+      var params = angular.merge({}, args);
+      // extend parameters with the hidden params
+      params.params = angular.merge(params.params, hidden || {});
+
       // Make the request
-      $http(args).then(
+      $http(params).then(
         success,
         error
       );

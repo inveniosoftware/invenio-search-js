@@ -46,14 +46,16 @@ describe('Check earchbar directive', function() {
 
       scope = $rootScope;
 
-      template = '<invenio-search search-endpoint="/api"> ' +
+      template = '<invenio-search search-endpoint="/api" ' +
+       'search-hidden-params=\'{"hero": "jessicajones"}\'> ' +
        '<invenio-search-bar template="src/invenio-search-js/templates/searchBar.html" ' +
        'placeholder="Type something"></invenio-search-bar>' +
        '</invenio-search>';
 
       // Expect a request
-      $httpBackend.whenGET('/api?page=1&q=jarvis:call+Jessica+Jones&size=20').respond(200, {success: true});
-      $httpBackend.whenGET('/api?page=1&q=jarvis:+get+to+the+choppa&size=20').respond(200, {success: true});
+      //
+      $httpBackend.whenGET('/api?hero=jessicajones&page=1&q=jarvis:call+Jessica+Jones&size=20').respond(200, {success: true});
+      $httpBackend.whenGET('/api?hero=jessicajones&page=1&q=jarvis:+get+to+the+choppa&size=20').respond(200, {success: true});
 
       // Compile
       template = $compile(template)(scope);
@@ -82,5 +84,13 @@ describe('Check earchbar directive', function() {
     );
 
     $httpBackend.flush();
+  });
+
+  it('should not have hidden parameters in the query', function() {
+    expect(scope.vm.invenioSearchArgs.params.hero).to.be.undefined;
+  });
+
+  it('should have hidden parameter', function() {
+    expect(scope.vm.invenioSearchHiddenParams.hero).to.be.equal('jessicajones');
   });
 });
