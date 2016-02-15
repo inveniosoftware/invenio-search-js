@@ -585,18 +585,61 @@
     // Functions
 
     /**
+     * Handle the click on any facet
+     * @memberof invenioSearchFacets
+     * @param {service} scope -  The scope of this element.
+     * @param {service} element - Element that this direcive is assigned to.
+     * @param {service} attrs - Attribute of this element.
+     * @param {invenioSearchController} vm - Invenio search controller.
+     */
+    function link(scope, element, attrs, vm) {
+
+      /**
+       * Handle click on the element
+       * @memberof link
+       */
+      function handleClick(key, value) {
+        var current = vm.invenioSearchArgs.params[key] || [];
+        // Make sure it's an object
+        current = (typeof current === 'string') ? [current] : current;
+
+        // Reset parameters
+        vm.invenioSearchArgs.params[key] = [];
+
+        if (current.indexOf(value) === -1) {
+          // Add the value in the list
+          current.push(value);
+        } else {
+          // Just remove it from the list
+          current.splice(current.indexOf(value), 1);
+        }
+
+        // Preapare object for merge
+        var params = {};
+        params[key] = current;
+        vm.invenioSearchArgs.params = angular.merge(
+          vm.invenioSearchArgs.params, params
+        );
+      }
+      scope.handleClick = handleClick;
+    }
+
+    /**
      * Choose template for facets
      * @memberof invenioSearchFacets
      * @param {service} element - Element that this direcive is assigned to.
      * @param {service} attrs - Attribute of this element.
      * @example
      *    Minimal template `template.html` usage
-     *        <div ng-repeat='facet in vm.invenioSearchResults.facets'>
-     *            <invenio-search-facets-click
-     *             key="{{ facet.key }}
-     *             value="{{ facet.value }}">
-     *             </invenio-search-facets-click>
-     *        </div>
+     *     <div ng-repeat="(key, value) in vm.invenioSearchResults.aggregations track by $index">
+     *       <ul class="list-unstyled" ng-repeat="item in value.buckets">
+     *         <li>
+     *          <input type="checkbox"
+     *           ng-click="handleClick(key, item.key)" />
+     *           {{ item.key }} ({{ item.doc_count }})
+     *         </li>
+     *       </ul>
+     *     </div>
      */
     function templateUrl(element, attrs) {
       return attrs.template;
@@ -609,85 +652,9 @@
       scope: false,
       require: '^invenioSearch',
       templateUrl: templateUrl,
-    };
-  }
-
-  /**
-   * @ngdoc directive
-   * @name invenioSearchFacetsClick
-   * @param {service} $timeout - Angular window.timeout service.
-   * @description
-   *    The invenio search results facets select handler
-   * @namespace invenioSearchFacetsClick
-   * @example
-   *    Usage:
-   *    <invenio-search-facets-click
-   *     key="FACET_NAME"
-   *     value="FACET_ITEM_VALUE">
-   *        ... Any children directives
-   *    </invenio-search-facets-click>
-   */
-  function invenioSearchFacetsClick() {
-
-    // Functions
-
-    /**
-     * Handle the click on any facet
-     * @memberof invenioSearchFacetsClick
-     * @param {service} scope -  The scope of this element.
-     * @param {service} element - Element that this direcive is assigned to.
-     * @param {service} attrs - Attribute of this element.
-     * @param {invenioSearchController} vm - Invenio search controller.
-     */
-    function link(scope, element, attrs, vm) {
-      var key = scope.$parent.$parent.key;
-      var value = scope.item.key.trim();
-
-      // Check if the box should be checked
-      if ((vm.invenioSearchArgs.params[key] || []).indexOf(value) > -1) {
-        element[0].checked = true;
-      }
-
-      /**
-       * Handle click on the element
-       * @memberof link
-       */
-      function handleClick() {
-        var current = vm.invenioSearchArgs.params[key] || [];
-        // Make sure it's an object
-        current = (typeof current === 'string') ? [current] : current;
-        // Reset parameters
-        vm.invenioSearchArgs.params[key] = [];
-        if (element[0].checked && current.indexOf(value) === -1) {
-          // Add the value in the list
-          current.push(value);
-        } else {
-          // Just remove it from the list
-          current.splice(current.indexOf(value), 1);
-        }
-        // Preapare object for merge
-        var params = {};
-        params[key] = current;
-        vm.invenioSearchArgs.params = angular.merge(
-          vm.invenioSearchArgs.params, params
-        );
-      }
-      scope.handleClick = handleClick;
-    }
-
-    ////////////
-
-    return {
-      restrict: 'AE',
-      scope: false,
-      require: '^invenioSearch',
       link: link,
     };
   }
-
-  // Inject the necessary angular services
-  invenioSearchFacetsClick.$inject = ['$timeout'];
-
 
   /**
    * @ngdoc directive
@@ -1359,8 +1326,7 @@
     .directive('invenioSearchLoading', invenioSearchLoading)
     .directive('invenioSearchSortOrder', invenioSearchSortOrder)
     .directive('invenioSearchSelectBox', invenioSearchSelectBox)
-    .directive('invenioSearchPagination', invenioSearchPagination)
-    .directive('invenioSearchFacetsClick', invenioSearchFacetsClick);
+    .directive('invenioSearchPagination', invenioSearchPagination);
 
 
   // Setup everyhting
