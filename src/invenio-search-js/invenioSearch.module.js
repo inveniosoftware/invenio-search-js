@@ -47,6 +47,9 @@
     // Search Error - if invenioSearch has the state error
     vm.invenioSearchError = {};
 
+    // Search Initialized - if the invenioSearch is initialized
+    vm.invenioSearchInitialized = false;
+
     // Search Query Args - invenioSearch query arguments
     vm.invenioSearchArgs = {
       method: 'GET',
@@ -88,19 +91,21 @@
      */
     function invenioSearchSetUrlArgs(newParameters, currentParameters) {
       // If the page haven't changed make sure that we are back to page 1
-      if (newParameters !== undefined) {
-        if (newParameters.q !== currentParameters.q) {
-          vm.invenioSearchArgs.params.page = 1;
+      if (!angular.equals(newParameters, currentParameters)) {
+        if (newParameters !== undefined) {
+          if (newParameters.q !== currentParameters.q) {
+            vm.invenioSearchArgs.params.page = 1;
+          }
         }
+
+        // Broadcast url changed
+        $scope.$broadcast('invenio.search.url.changed');
+
+        // Update the userQuery with the latest
+        vm.userQuery = vm.invenioSearchArgs.params.q;
+        // Set the new url
+        invenioSearchHandler.set(vm.invenioSearchArgs.params);
       }
-
-      // Broadcast url changed
-      $scope.$broadcast('invenio.search.url.changed');
-
-      // Update the userQuery with the latest
-      vm.userQuery = vm.invenioSearchArgs.params.q;
-      // Set the new url
-      invenioSearchHandler.set(vm.invenioSearchArgs.params);
     }
 
     /**
@@ -169,7 +174,7 @@
      * @param {Object} currentUrl - The current url value.
      */
     function invenioSearchLocationChange($event, nextUrl, currentUrl) {
-      if (!angular.equals(nextUrl, currentUrl)) {
+      if (!angular.equals(nextUrl, currentUrl) || !vm.invenioSearchInitialized) {
         // Get the parameters
         var parameters = {
           params: vm.invenioSearchGetUrlArgs()
@@ -180,9 +185,12 @@
           vm.invenioSearchArgs,
           parameters
         );
+        // Do the action search
+        vm.invenioDoSearch();
+
+        // Initilize search
+        vm.invenioSearchInitialized = true;
       }
-      // Do the action search
-      vm.invenioDoSearch();
     }
 
 
