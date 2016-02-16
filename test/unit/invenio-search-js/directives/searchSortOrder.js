@@ -54,7 +54,6 @@ describe('Check search sort order directive', function() {
 
       template = '<invenio-search search-endpoint="/api"> ' +
         '<invenio-search-sort-order ' +
-          'label="a label" ' +
           'sort-key="sort" ' +
           'template="src/invenio-search-js/templates/toggleButton.html" ' +
         '>' +
@@ -74,37 +73,23 @@ describe('Check search sort order directive', function() {
     })
   );
 
-  it('should have the specified label', function() {
-    // Select should have date as value
-    expect(template.find('button').eq(0).text()).to.contain('label');
-  });
-
-  it('should have the class active', function() {
-    // Select should have date as value
-    scope.vm.invenioSearchArgs.params.sort = "-date";
-    scope.$digest();
-    expect(scope.vm.invenioSearchArgs.params.sort).to.be.equal('-date');
-
-  });
-
-  it('should have change the sort', inject(function($timeout) {
+  it('should have change the sort to descending', inject(function($timeout) {
     // Select should have date as value
     scope.vm.invenioSearchArgs.params.sort = "date";
+    template.find('select').eq(0).val('-date');
+    template.find('select').eq(0).triggerHandler('change');
     scope.$digest();
-    template.find('button').eq(0).triggerHandler('click');
     $timeout.flush();
-    scope.$digest();
     expect(scope.vm.invenioSearchArgs.params.sort).to.be.equal('-date');
   }));
 
-  it('should have change the -sort', inject(function($timeout) {
+  it('should have change the sort to ascending', inject(function($timeout) {
     // Select should have date as value
     scope.vm.invenioSearchArgs.params.sort = "-date";
+    template.find('select').eq(0).val('date');
+    template.find('select').eq(0).triggerHandler('change');
     scope.$digest();
-    template.find('button').eq(0).triggerHandler('click');
     $timeout.flush();
-    scope.$digest();
     expect(scope.vm.invenioSearchArgs.params.sort).to.be.equal('date');
   }));
-
 });

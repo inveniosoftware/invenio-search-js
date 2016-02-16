@@ -1054,13 +1054,12 @@
    * @example
    *    Usage:
    *    <invenio-search-sort-order
-   *     label="Z->A"
    *     sort-key="sort"
    *     template='TEMPLATE_PATH'>
    *        ... Any children directives
    *    </invenio-search-sort-order>
    */
-  function invenioSearchSortOrder($timeout) {
+  function invenioSearchSortOrder() {
 
     // Functions
 
@@ -1083,11 +1082,10 @@
       function setSortKey(key, value) {
         var params = {};
         params[key] = value || null;
-        $timeout(function() {
-          vm.invenioSearchArgs.params = angular.merge(
-            vm.invenioSearchArgs.params, params
-          );
-        }, 0);
+        vm.invenioSearchArgs.params = angular.merge(
+          vm.invenioSearchArgs.params, params
+        );
+        scope.whichOrder = (value || '').charAt(0);
       }
 
       /**
@@ -1104,7 +1102,7 @@
        * Handle click
        * @memberof link
        */
-      function handleClick() {
+      function handleChange() {
         var sortValue = [];
         var value = vm.invenioSearchArgs.params[scope.sortKey] || '';
         if (value) {
@@ -1113,8 +1111,6 @@
           } else {
             value = value.slice(1, value.length);
           }
-          // Change the button state
-          scope.isPressed = !scope.isPressed;
           sortValue.push(value);
           setSortKey(
             scope.sortKey, sortValue.join('')
@@ -1124,27 +1120,11 @@
 
       // on element click update invenioSearchArgs.params
       scope.sortKey = attrs.sortKey;
-      scope.label = attrs.label;
 
+      // When scope.data has changed
+      scope.handleChange = handleChange;
       // Check if the url has sorting option
-      if (hasSortingOrder()) {
-        scope.isPressed = true;
-      }
-
-      function onChange(newValue, oldValue) {
-        if (!angular.equals(newValue[scope.sortKey], oldValue[scope.sortKey])){
-          if (!hasSortingOrder()) {
-            // Change the button state
-            scope.isPressed = false;
-          }
-        }
-      }
-      // When scope.data has changed
-      scope.$watchCollection(
-        'vm.invenioSearchArgs.params', onChange
-      );
-      // When scope.data has changed
-      scope.handleClick = handleClick;
+      scope.whichOrder = (vm.invenioSearchArgs.params[scope.sortKey] || '').charAt(0);
     }
 
     /**
@@ -1154,11 +1134,10 @@
      * @param {service} attrs - Attribute of this element.
      * @example
      *    Minimal template `template.html` usage
-     *      <button
-     *       ng-click="handleClick()"
-     *       ng-class="{'active': isPressed}">
-     *        {{ label }}
-     *      </button>
+     *     <select name="select-order-{{ data.sortKey }}" ng-model="whichOrder" ng-change="handleChange()">
+     *       <option value="x" ng-selected="whichOrder != '-'">asc.</option>
+     *       <option value="-" ng-selected="whichOrder == '-'">desc.</option>
+     *     </select>
      */
     function templateUrl(element, attrs) {
       return attrs.template;
@@ -1173,9 +1152,6 @@
       link: link,
     };
   }
-
-  // Inject the necessary angular services
-  invenioSearchSortOrder.$inject = ['$timeout'];
 
   ////////////
 
