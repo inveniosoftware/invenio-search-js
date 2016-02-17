@@ -58,17 +58,22 @@ describe('Check search results directive', function() {
       scope.$digest();
 
       scope.vm.invenioSearchResults = {
+        links: {
+          self: 'http://localhost:5000/api?page=1&size=20'
+        },
         hits: {
           hits: [
             {
-              _source: {
+              metadata: {
+                'control_number': 1,
                 title_statement: {
                   title: 'I\'m Iron Man',
                 },
               }
             },
             {
-              _source: {
+              metadata: {
+                'control_number': 2,
                 title_statement: {
                   title: 'I\'m Captain America'
                 }
@@ -90,7 +95,7 @@ describe('Check search results directive', function() {
     //// Expect html list items to be 2
     expect(template.find('li').size()).to.be.equal(2);
     // Expect the frist element to be Iron Man and the second Captain America
-    expect(template.find('li').eq(0).text().trim()).to.be.equal('I\'m Iron Man');
-    expect(template.find('li').eq(1).text().trim()).to.be.equal('I\'m Captain America');
+    expect(template.find('li').eq(0).text().trim()).to.be.equal('1: I\'m Iron Man');
+    expect(template.find('li').eq(1).text().trim()).to.be.equal('2: I\'m Captain America');
   });
 });

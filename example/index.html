@@ -38,7 +38,7 @@
             <h1>Invenio Search Demo</h1>
           </div>
           <div ng-app="invenioSearch">
-            <invenio-search search-endpoint="http://localhost:5000/api">
+            <invenio-search search-endpoint="http://localhost:5000/api/records/">
               <div class="row">
                 <div class="col-md-3">
                   <invenio-search-facets
@@ -62,8 +62,8 @@
                     <!-- SORT -->
                     <invenio-search-select-box
                      sort-key="sort"
-                     default-option="date"
-                     available-options='{"options": [{"title": "Title", "value": "title"}, {"title": "Date", "value": "date"}]}'
+                     default-option="bestmatch"
+                     available-options='{"options": [{"title": "Best match", "value": "bestmatch"}, {"title": "Control number", "value": "-controlnumber"}]}'
                      template="/src/invenio-search-js/templates/selectBox.html"
                     >
                     </invenio-search-select-box>

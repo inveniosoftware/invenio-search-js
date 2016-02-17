@@ -28,3 +28,4 @@ Invenio Search JS.
 
 - Harris Tzovanakis <me@drjova.com>
 - Jiri Kuncar <jiri.kuncar@cern.ch>
+- Lars Holm Nielsen <lars.holm.nielsen@cern.ch>

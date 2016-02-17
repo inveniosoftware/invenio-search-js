@@ -13,3 +13,6 @@ libpeerconnection.log
 
 # OS-specific
 .DS_Store
+
+dist/
+coverage/

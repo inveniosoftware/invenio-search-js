@@ -55,7 +55,6 @@ describe('Check search selectbox directive', function() {
       template = '<invenio-search search-endpoint="/api"> ' +
        '<invenio-search-select-box ' +
         'sort-key="sort"' +
-        'default-option="date" ' +
         'available-options=\'{"options": [{"title": "Title", "value": "title"}, {"title": "Date", "value": "date"}]}\' ' +
         'template="src/invenio-search-js/templates/selectBox.html" ' +
        '>' +
@@ -70,7 +69,7 @@ describe('Check search selectbox directive', function() {
   it('should have two options in the selectbox', function() {
     expect(template.find('select').length).to.be.equal(1);
     // Select should have date as value
-    expect(template.find('select').eq(0).val()).to.contain('date');
+    expect(template.find('select').eq(0).val()).to.contain('title');
   });
 
   it('should have change the sort parameter to title', function() {

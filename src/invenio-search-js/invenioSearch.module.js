@@ -38,8 +38,11 @@
 
     // Parameters
 
-    // Initialize search resutls
+    // Initialize search results
     vm.invenioSearchResults = {};
+
+    // Initialize error results
+    vm.invenioSearchErrorResults = {};
 
     // Search Loading - if invenioSearch has the state loading
     vm.invenioSearchLoading = true;
@@ -58,6 +61,9 @@
         size: 20,
       }
     };
+
+    // Initialize current search args
+    vm.invenioSearchCurrentArgs = {};
 
     // Search URL arguments
     // Get
@@ -91,7 +97,8 @@
      */
     function invenioSearchSetUrlArgs(newParameters, currentParameters) {
       // If the page haven't changed make sure that we are back to page 1
-      if (!angular.equals(newParameters, currentParameters)) {
+      if (!angular.equals(newParameters, currentParameters) &&
+          !angular.equals(newParameters, vm.invenioSearchCurrentArgs)) {
         if (newParameters !== undefined) {
           if (newParameters.q !== currentParameters.q) {
             vm.invenioSearchArgs.params.page = 1;
@@ -121,6 +128,7 @@
       vm.invenioSearchLoading = true;
       // Clear any previous errors
       vm.invenioSearchError = {};
+      vm.invenioSearchErrorsResults = {};
 
       /**
        * After the request finish proccesses
@@ -141,22 +149,18 @@
        */
       function successfulRequest(response) {
         // Broadcast the success
-        $scope.$broadcast('invenio.search.success');
-        // Assign the new data
-        vm.invenioSearchResults = response.data;
+        $scope.$broadcast('invenio.search.success', response);
       }
 
       /**
        * After an errored request
        * @memberof invenioDoSearch
        * @function erroredRequest
-       * @param {Object} error - The search request response.
+       * @param {Object} response - The search request response.
        */
-      function erroredRequest(error) {
-        // Set results to none
-        vm.invenioSearchResults = {};
+      function erroredRequest(response) {
         // Broadcast the error
-        $scope.$broadcast('invenio.search.error', error);
+        $scope.$broadcast('invenio.search.error', response);
       }
 
       invenioSearchAPI
@@ -193,17 +197,66 @@
       }
     }
 
+    /**
+     * Parse query string args from a full URL
+     * @memberof invenioSearchController
+     * @function parseURLQueryString
+     * @param {String} url - The URL to parse.
+     */
+    function parseURLQueryString(url) {
+      var query_string = (url.split('?')[1] || '').split('&');
+      var data = {};
+
+      for (var i = 0; i < query_string.length; i += 1) {
+          var param = (query_string[i] || '').split('=');
+          var key = decodeURIComponent(param[0] || '');
+          if (key) {
+            data[key] = decodeURIComponent(param[1] || '');
+          }
+      }
+
+      return data;
+    }
 
     /**
-     * Proccess a search error
+     * Process a search error
      * @memberof invenioSearchController
      * @function invenioSearchErrorHandler
      * @param {Object} error - The error trace.
      */
-    function invenioSearchErrorHandler(error) {
+    function invenioSearchErrorHandler(event, response) {
+      vm.invenioSearchErrorResults = response.data;
       // Set the new error
-      vm.invenioSearchError = error;
+      vm.invenioSearchError = event;
     }
+
+    /**
+     * Process a search success
+     * @memberof invenioSearchController
+     * @function invenioSearchSuccessHandler
+     */
+    function invenioSearchSuccessHandler(event, response) {
+      // Set results
+      vm.invenioSearchResults = response.data;
+      // Set error to none
+      vm.invenioSearchErrorResults = {};
+
+      // Save parameters from request
+      if (response.data.links) {
+        var data = parseURLQueryString(response.data.links.self);
+        if (data['page']) {
+          data['page'] = parseInt(data['page']);
+        }
+        if (data['size']) {
+          data['size'] = parseInt(data['size']);
+        }
+        delete data['q'];
+        if (!angular.equals(vm.invenioSearchCurrentArgs, data)) {
+          vm.invenioSearchCurrentArgs = data;
+        }
+      }
+    }
+
 
     ////////////
 
@@ -213,13 +266,14 @@
     $scope.$on('$locationChangeStart', invenioSearchLocationChange);
     // When the search errored
     $scope.$on('invenio.search.error', invenioSearchErrorHandler);
+    // When the search was successful
+    $scope.$on('invenio.search.success', invenioSearchSuccessHandler);
     // When invenioSearchArgs.params has changed
     $scope.$watchCollection(
       'vm.invenioSearchArgs.params', vm.invenioSearchSetUrlArgs
     );
 
     ////////////
-
   }
 
   invenioSearchController.$inject = [
@@ -930,7 +984,6 @@
    *    Usage:
    *    <invenio-search-select-box
    *     sort-key="sort"
-   *     default-option="date"
    *     available-options='{
    *        "options": [
    *          {
@@ -968,23 +1021,12 @@
        */
       function setSortKey(key, value) {
         var params = {};
-        params[key] = value || null;
-        vm.invenioSearchArgs.params = angular.merge(
-          vm.invenioSearchArgs.params, params
-        );
-      }
-
-      /**
-       * Handle select box on change the element
-       * @param {String} newValue - The new sort value.
-       * @param {String} oldValue - The current soert value.
-       * @memberof link
-       */
-      function onChange(newValue, oldValue) {
-        // Check if is passed from parameters url
-        setSortKey(
-          scope.data.sortKey, scope.data.selectedOption
-        );
+        if (value) {
+          params[key] = value || null;
+          vm.invenioSearchArgs.params = angular.merge(
+            vm.invenioSearchArgs.params, params
+          );
+        }
       }
 
       /**
@@ -993,27 +1035,72 @@
        * @memberof link
        */
       function isSelected(value) {
-        // Ignore if `-` character is infront
-        var check = vm.invenioSearchArgs.params[scope.data.sortKey] || '';
-        if (check.indexOf('-') > -1){
+        // Ignore if `-` character is in front of either value or check
+        var check = (vm.invenioSearchArgs.params[scope.data.sortKey] ||
+                     vm.invenioSearchCurrentArgs[scope.data.sortKey] || '');
+        if (check.charAt(0) === '-'){
           check = check.slice(1, check.length);
         }
+        if (value.charAt(0) === '-'){
+          value = value.slice(1, value.length);
+        }
         return  check === value || false;
+      }
+
+      /**
+       * Handle change
+       * @memberof link
+       */
+      function handleFieldChange() {
+        // Get current sort field
+        setSortKey(scope.data.sortKey, scope.data.selectedOption);
+      }
+
+      /**
+       * Handle change of sort parameter.
+       * @memberof link
+       */
+      function onCurrentSearchChange(newValue, oldValue) {
+        if(newValue){
+          var check = scope.data.selectedOption;
+          // Normalize names
+          if (check.charAt(0) === '-'){
+            check = check.slice(1, check.length);
+          }
+          var value = null;
+          if (newValue.charAt(0) === '-'){
+            value = newValue.slice(1, newValue.length);
+          } else {
+            value = newValue;
+          }
+          if(check !== value){
+            scope.data.selectedOption = newValue;
+          }
+        }
       }
 
       // Attach to scope
       scope.data  = {
         availableOptions: JSON.parse(attrs.availableOptions || '{}'),
-        defaultOption: attrs.defaultOption || null,
-        selectedOption: vm.invenioSearchArgs.params[attrs.sortKey] || attrs.defaultOption ||  null,
+        selectedOption: vm.invenioSearchArgs.params[attrs.sortKey] || null,
         sortKey:  attrs.sortKey || 'sort',
       };
-      // Attach the function to check if is selected or not
-      scope.isSelected = isSelected;
 
+      if(scope.data.selectedOption === null) {
+        scope.data.selectedOption =
+          scope.data.availableOptions.options[0].value;
+      }
+
+      // Attach the function to check if it is selected or not
+      scope.isSelected = isSelected;
       // When scope.data has changed
+      scope.handleFieldChange = handleFieldChange;
+      // Watch sort parameters
       scope.$watchCollection(
-        'data.selectedOption', onChange
+        'vm.invenioSearchCurrentArgs.sort', onCurrentSearchChange
+      );
+      scope.$watchCollection(
+        'vm.invenioSearchArgs.sort', onCurrentSearchChange
       );
     }
 
@@ -1085,46 +1172,54 @@
         vm.invenioSearchArgs.params = angular.merge(
           vm.invenioSearchArgs.params, params
         );
-        scope.whichOrder = (value || '').charAt(0);
-      }
-
-      /**
-       * Check if url has sorting order
-       * @memberof link
-       */
-      function hasSortingOrder() {
-        return (
-            vm.invenioSearchArgs.params[attrs.sortKey] || ''
-          ).indexOf('-') === -1 ? false : true;
+        scope.whichOrder = (value || '').charAt(0) !== '-' ? 'asc' : 'desc';
       }
 
       /**
        * Handle click
        * @memberof link
        */
-      function handleChange() {
-        var sortValue = [];
-        var value = vm.invenioSearchArgs.params[scope.sortKey] || '';
-        if (value) {
-          if (!hasSortingOrder()) {
-            sortValue.push('-');
-          } else {
-            value = value.slice(1, value.length);
-          }
-          sortValue.push(value);
-          setSortKey(
-            scope.sortKey, sortValue.join('')
-          );
+      function handleOrderChange() {
+        // Get current sort field
+        var sortfield = (
+          vm.invenioSearchArgs.params[scope.sortKey] ||
+          vm.invenioSearchCurrentArgs[scope.sortKey] || '');
+        if (sortfield.charAt(0) === '-'){
+          sortfield = sortfield.slice(1, sortfield.length);
+        }
+
+        // Set new sort field.
+        if (scope.whichOrder === 'asc') {
+          setSortKey(scope.sortKey, sortfield);
+        } else if (scope.whichOrder === 'desc') {
+          setSortKey(scope.sortKey, '-' + sortfield);
+        }
+      }
+
+      /**
+       * Handle change of sort parameter.
+       * @memberof link
+       */
+      function onCurrentSearchChange(newValue, oldValue) {
+        if(newValue) {
+          scope.whichOrder = newValue.charAt(0) !== '-' ? 'asc' : 'desc';
         }
       }
 
       // on element click update invenioSearchArgs.params
       scope.sortKey = attrs.sortKey;
-
       // When scope.data has changed
-      scope.handleChange = handleChange;
+      scope.handleOrderChange = handleOrderChange;
       // Check if the url has sorting option
-      scope.whichOrder = (vm.invenioSearchArgs.params[scope.sortKey] || '').charAt(0);
+      scope.whichOrder = 'asc';
+
+      // Watch sort parameters
+      scope.$watchCollection(
+        'vm.invenioSearchCurrentArgs.sort', onCurrentSearchChange
+      );
+      scope.$watchCollection(
+        'vm.invenioSearchArgs.sort', onCurrentSearchChange
+      );
     }
 
     /**

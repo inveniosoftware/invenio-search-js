@@ -59,7 +59,6 @@ describe('Check search sort order directive', function() {
         '>' +
        '<invenio-search-select-box ' +
         'sort-key="sort"' +
-        'default-option="date" ' +
         'available-options=\'{"options": [{"title": "Title", "value": "title"}, {"title": "Date", "value": "date"}]}\' ' +
         'template="src/invenio-search-js/templates/selectBox.html" ' +
        '>' +
@@ -76,7 +75,7 @@ describe('Check search sort order directive', function() {
   it('should have change the sort to descending', inject(function($timeout) {
     // Select should have date as value
     scope.vm.invenioSearchArgs.params.sort = "date";
-    template.find('select').eq(0).val('-date');
+    template.find('select').eq(0).val('desc');
     template.find('select').eq(0).triggerHandler('change');
     scope.$digest();
     $timeout.flush();
@@ -86,7 +85,9 @@ describe('Check search sort order directive', function() {
   it('should have change the sort to ascending', inject(function($timeout) {
     // Select should have date as value
     scope.vm.invenioSearchArgs.params.sort = "-date";
-    template.find('select').eq(0).val('date');
+    template.find('select').eq(0).val('desc');
+    template.find('select').eq(0).triggerHandler('change');
+    template.find('select').eq(0).val('asc');
     template.find('select').eq(0).triggerHandler('change');
     scope.$digest();
     $timeout.flush();

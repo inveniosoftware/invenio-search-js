@@ -67,6 +67,6 @@ describe('Check search error directive', function() {
 
   it('should have attributes', function() {
     expect(template.scope().vm.invenioSearchError.message).to.be.equal('Error');
-    expect(template.find('div.alert').text().trim()).to.be.equal('Yo error');
+    expect(template.find('div.alert').text().trim()).to.be.equal('Error: Yo error');
   });
 });
