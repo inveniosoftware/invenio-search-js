@@ -46,16 +46,22 @@ describe('Check search selectbox directive', function() {
 
       scope = $rootScope;
 
+      var response = {
+        links: {
+          self: 'http://hello?size=20&page=20&sort=harleyquinn'
+        }
+      }
+
       // Expect a request
-      $httpBackend.whenGET('/api?page=1&size=20').respond(200, {success: true});
-      $httpBackend.whenGET('/api?page=1&size=20&sort=date').respond(200, {success: true});
-      $httpBackend.whenGET('/api?page=1&size=20&sort=-date').respond(200, {success: true});
-      $httpBackend.whenGET('/api?page=1&size=20&sort=title').respond(200, {success: true});
-      $httpBackend.whenGET('/api?page=1&size=20&sort=-title').respond(200, {success: true});
+      $httpBackend.whenGET('/api?page=1&size=20').respond(200, response);
+      $httpBackend.whenGET('/api?page=1&size=20&sort=date').respond(200, response)
+      $httpBackend.whenGET('/api?page=1&size=20&sort=-date').respond(200, response);
+      $httpBackend.whenGET('/api?page=1&size=20&sort=title').respond(200, response);
+      $httpBackend.whenGET('/api?page=1&size=20&sort=-title').respond(200, response);
 
       template = '<invenio-search search-endpoint="/api"> ' +
        '<invenio-search-select-box ' +
-        'sort-key="sort"' +
+        'sort-key="sort" ' +
         'available-options=\'{"options": [{"title": "Title", "value": "title"}, {"title": "Date", "value": "-date"}]}\' ' +
         'template="src/invenio-search-js/templates/selectBox.html" ' +
        '>' +
@@ -69,42 +75,58 @@ describe('Check search selectbox directive', function() {
 
   it('should have two options in the selectbox', function() {
     expect(template.find('select').length).to.be.equal(1);
+
     // Select should have date as value
     expect(template.find('select').eq(0).val()).to.contain('title');
   });
 
   it('should have change the sort parameter to title', function() {
     template.find('select').val('title');
+
     // Select should have date as value
     expect(template.find('select').eq(0).val()).to.contain('title');
   });
 
   it('should ignore `-` infornt of sort option', function() {
-    scope.vm.invenioSearchArgs['sort'] = '-title';
+    scope.vm.invenioSearchArgs.sort = '-title';
     scope.$digest();
+
     // Select should have date as value
     expect(template.find('select').eq(0).val()).to.contain('title');
   });
 
   it('should fallback to the default option ', function() {
-    scope.vm.invenioSearchArgs['sort'] = undefined;
+    scope.vm.invenioSearchArgs.sort = undefined;
     scope.$digest();
+
     // Select should have date as value
     expect(template.find('select').eq(0).val()).to.contain('title');
   });
 
   it('should have select the sort value ', function() {
-    scope.vm.invenioSearchArgs['sort'] = 'title';
+    scope.vm.invenioSearchArgs.sort = 'title';
     scope.$digest();
+
     // Select should have date as value
     expect(template.find('select').eq(0).val()).to.contain('title');
   });
 
   it('should normalize the value', function() {
-    scope.vm.invenioSearchArgs['sort'] = '-date';
+    // Select a value with -
+    template.find('select').eq(0).val('-date');
+    template.find('select').eq(0).triggerHandler('change');
     scope.$digest();
-    // Select should have date as value
+
+    // Select should have -date as value
     expect(template.find('select').eq(0).val()).to.contain('-date');
+  });
+
+  it('should add the changed value as selected option', function() {
+    // Select a value with -
+    $httpBackend.flush();
+
+    // Select should have -date as value
+    expect(template.find('select').eq(0).val()).to.contain('harleyquinn');
   });
 
 });

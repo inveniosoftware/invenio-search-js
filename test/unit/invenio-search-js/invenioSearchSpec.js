@@ -54,4 +54,5 @@ describe('Unit: testing dependencies', function() {
   it('should load configuaration module', function() {
     expect(hasModule('invenioSearch.configuration')).to.be.ok;
   });
+
 });
