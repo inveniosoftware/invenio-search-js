@@ -45,12 +45,11 @@ describe('Check search sort order directive', function() {
       $rootScope = _$rootScope_;
 
       scope = $rootScope;
-
-
       // Expect a request
       $httpBackend.whenGET('/api?page=1&size=20').respond(200, {success: true});
       $httpBackend.whenGET('/api?page=1&size=20&sort=date').respond(200, {success: true});
       $httpBackend.whenGET('/api?page=1&size=20&sort=-date').respond(200, {success: true});
+      $httpBackend.whenGET('/api?page=1&size=20&sort=-title').respond(200, {success: true});
 
       template = '<invenio-search search-endpoint="/api"> ' +
         '<invenio-search-sort-order ' +
@@ -59,7 +58,7 @@ describe('Check search sort order directive', function() {
         '>' +
        '<invenio-search-select-box ' +
         'sort-key="sort"' +
-        'available-options=\'{"options": [{"title": "Title", "value": "title"}, {"title": "Date", "value": "date"}]}\' ' +
+        'available-options=\'{"options": [{"title": "Title", "value": "-title"}, {"title": "Date", "value": "date"}]}\' ' +
         'template="src/invenio-search-js/templates/selectBox.html" ' +
        '>' +
        '</invenio-search-select-box>' +
@@ -67,30 +66,45 @@ describe('Check search sort order directive', function() {
       '</invenio-search>';
 
       template = $compile(template)(scope);
-      scope.vm.invenioSearchArgs.params.sort = "-date";
       scope.$digest();
     })
   );
 
   it('should have change the sort to descending', inject(function($timeout) {
     // Select should have date as value
-    scope.vm.invenioSearchArgs.params.sort = "date";
+    scope.vm.invenioSearchArgs.sort = "date";
     template.find('select').eq(0).val('desc');
     template.find('select').eq(0).triggerHandler('change');
     scope.$digest();
     $timeout.flush();
-    expect(scope.vm.invenioSearchArgs.params.sort).to.be.equal('-date');
+    expect(scope.vm.invenioSearchArgs.sort).to.be.equal('-date');
   }));
 
   it('should have change the sort to ascending', inject(function($timeout) {
     // Select should have date as value
-    scope.vm.invenioSearchArgs.params.sort = "-date";
+    scope.vm.invenioSearchArgs.sort = "-date";
     template.find('select').eq(0).val('desc');
     template.find('select').eq(0).triggerHandler('change');
     template.find('select').eq(0).val('asc');
     template.find('select').eq(0).triggerHandler('change');
     scope.$digest();
     $timeout.flush();
-    expect(scope.vm.invenioSearchArgs.params.sort).to.be.equal('date');
+    expect(scope.vm.invenioSearchArgs.sort).to.be.equal('date');
+  }));
+
+  it('should have change the sort to desceding', inject(function($timeout) {
+    // Select should have date as value
+    scope.vm.invenioSearchArgs.sort = "-title";
+    template.find('select').eq(0).val('desc');
+    template.find('select').eq(0).triggerHandler('change');
+    scope.$digest();
+    $timeout.flush();
+    expect(scope.vm.invenioSearchArgs.sort).to.be.equal('-title');
+    // Change value
+    scope.vm.invenioSearchArgs.sort = "-date";
+    template.find('select').eq(0).val('asc');
+    template.find('select').eq(0).triggerHandler('change');
+    scope.$digest();
+    expect(scope.vm.invenioSearchArgs.sort).to.be.equal('date');
   }));
 });

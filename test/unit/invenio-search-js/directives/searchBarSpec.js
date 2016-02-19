@@ -54,6 +54,7 @@ describe('Check earchbar directive', function() {
 
       // Expect a request
       //
+      $httpBackend.whenGET('/api?hero=jessicajones&page=1&size=20').respond(200, {success: true});
       $httpBackend.whenGET('/api?hero=jessicajones&page=1&q=jarvis:call+Jessica+Jones&size=20').respond(200, {success: true});
       $httpBackend.whenGET('/api?hero=jessicajones&page=1&q=jarvis:+get+to+the+choppa&size=20').respond(200, {success: true});
 
@@ -61,7 +62,7 @@ describe('Check earchbar directive', function() {
       template = $compile(template)(scope);
       template.scope().userQuery = 'jarvis: get to the choppa';
 
-      scope.vm.invenioSearchArgs.params.q = 'jarvis: get to the choppa';
+      scope.vm.invenioSearchCurrentArgs.params.q = 'jarvis: get to the choppa';
       // Digest
       scope.$digest();
     })
@@ -80,14 +81,14 @@ describe('Check earchbar directive', function() {
     scope.$digest();
 
     expect(template.find('input').val()).to.be.equal(
-      scope.vm.invenioSearchArgs.params.q
+      scope.vm.invenioSearchCurrentArgs.params.q
     );
 
     $httpBackend.flush();
   });
 
   it('should not have hidden parameters in the query', function() {
-    expect(scope.vm.invenioSearchArgs.params.hero).to.be.undefined;
+    expect(scope.vm.invenioSearchCurrentArgs.hero).to.be.undefined;
   });
 
   it('should have hidden parameter', function() {

@@ -6,10 +6,10 @@
     <div class="panel-body">
       <ul class="list-unstyled" ng-repeat="item in value.buckets">
         <li>
-          <input type="checkbox" ng-checked="vm.invenioSearchArgs.params[key].indexOf(item.key) > -1" ng-click="handleClick(key, item.key)" /> {{ item.key }} ({{ item.doc_count }})
+          <input type="checkbox" ng-checked="handler[key].indexOf(item.key) > -1" ng-click="handleClick(key, item.key)" /> {{ item.key }} ({{ item.doc_count }})
           <small>
             <a
-              ng-init="tree_more[item.key]=false;tree[item.key]=(vm.invenioSearchArgs.params[key].indexOf(item.key) > -1) ? true : false"
+              ng-init="tree_more[item.key]=false;tree[item.key]=(handler[key].indexOf(item.key) > -1) ? true : false"
               ng-model="tree[item.key]"
               ng-show="tree_more[item.key]"
               ng-click="tree[item.key]=!tree[item.key]"
@@ -22,9 +22,9 @@
               <ul ng-init="tree_more[item.key]=true" ng-repeat="subFacets in subValue.buckets">
                 <li>
                   <input
-                   ng-init="tree[item.key]=(vm.invenioSearchArgs.params[subKey].indexOf(subFacets.key) > -1 || tree[item.key])"
+                   ng-init="tree[item.key]=(handler[subKey].indexOf(subFacets.key) > -1 || tree[item.key])"
                    type="checkbox"
-                   ng-checked="vm.invenioSearchArgs.params[subKey].indexOf(subFacets.key) > -1"
+                   ng-checked="handler[subKey].indexOf(subFacets.key) > -1"
                    ng-click="handleClick(subKey, subFacets.key)" /> {{ subFacets.key }} ({{ subFacets.doc_count }})
                 </li>
               </ul>

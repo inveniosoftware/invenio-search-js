@@ -49,13 +49,14 @@ describe('Check search selectbox directive', function() {
       // Expect a request
       $httpBackend.whenGET('/api?page=1&size=20').respond(200, {success: true});
       $httpBackend.whenGET('/api?page=1&size=20&sort=date').respond(200, {success: true});
+      $httpBackend.whenGET('/api?page=1&size=20&sort=-date').respond(200, {success: true});
       $httpBackend.whenGET('/api?page=1&size=20&sort=title').respond(200, {success: true});
       $httpBackend.whenGET('/api?page=1&size=20&sort=-title').respond(200, {success: true});
 
       template = '<invenio-search search-endpoint="/api"> ' +
        '<invenio-search-select-box ' +
         'sort-key="sort"' +
-        'available-options=\'{"options": [{"title": "Title", "value": "title"}, {"title": "Date", "value": "date"}]}\' ' +
+        'available-options=\'{"options": [{"title": "Title", "value": "title"}, {"title": "Date", "value": "-date"}]}\' ' +
         'template="src/invenio-search-js/templates/selectBox.html" ' +
        '>' +
        '</invenio-search-select-box>' +
@@ -79,17 +80,31 @@ describe('Check search selectbox directive', function() {
   });
 
   it('should ignore `-` infornt of sort option', function() {
-    scope.vm.invenioSearchArgs.params['sort'] = '-title';
+    scope.vm.invenioSearchArgs['sort'] = '-title';
     scope.$digest();
     // Select should have date as value
     expect(template.find('select').eq(0).val()).to.contain('title');
   });
 
   it('should fallback to the default option ', function() {
-    scope.vm.invenioSearchArgs.params['sort'] = undefined;
+    scope.vm.invenioSearchArgs['sort'] = undefined;
     scope.$digest();
     // Select should have date as value
     expect(template.find('select').eq(0).val()).to.contain('title');
+  });
+
+  it('should have select the sort value ', function() {
+    scope.vm.invenioSearchArgs['sort'] = 'title';
+    scope.$digest();
+    // Select should have date as value
+    expect(template.find('select').eq(0).val()).to.contain('title');
+  });
+
+  it('should normalize the value', function() {
+    scope.vm.invenioSearchArgs['sort'] = '-date';
+    scope.$digest();
+    // Select should have date as value
+    expect(template.find('select').eq(0).val()).to.contain('-date');
   });
 
 });
