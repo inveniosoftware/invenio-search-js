@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>invenioSearchResults - Documentation</title>
+    <title>invenioSearchSelectBox - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">invenioSearchResults</h1>
+    <h1 class="page-title">invenioSearchSelectBox</h1>
     
 
     
@@ -41,7 +41,7 @@
 <header>
     
         <h2>
-        invenioSearchResults
+        invenioSearchSelectBox
         </h2>
         
     
@@ -51,7 +51,7 @@
     <div class="container-overview">
     
         
-            <div class="description">The invenioSearchResults directive</div>
+            <div class="description">The invenioSearchSelectBox directive</div>
         
 
         
@@ -86,7 +86,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="invenioSearch.module.js.html">invenioSearch.module.js</a>, <a href="invenioSearch.module.js.html#line504">line 504</a>
+        <a href="invenioSearch.module.js.html">invenioSearch.module.js</a>, <a href="invenioSearch.module.js.html#line1002">line 1002</a>
     </li></ul></dd>
     
 
@@ -102,11 +102,22 @@
             <h3>Example</h3>
             
     <pre class="prettyprint"><code>Usage:
-   &lt;invenio-search-results
-    template='TEMPLATE_PATH'
-    records-template='TEMPLATE_PATH'>
+   &lt;invenio-search-select-box
+    sort-key="sort"
+    available-options='{
+       "options": [
+         {
+           "title": "Title",
+           "value": "title"
+         },
+         {
+           "title": "Date",
+           "value": "date"
+         }
+         ]}'
+    template='TEMPLATE_PATH'>
        ... Any children directives
-   &lt;/invenio-search-results></code></pre>
+   &lt;/invenio-search-select-box></code></pre>
 
         
     
@@ -301,7 +312,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="invenioSearch.module.js.html">invenioSearch.module.js</a>, <a href="invenioSearch.module.js.html#line530">line 530</a>
+        <a href="invenioSearch.module.js.html">invenioSearch.module.js</a>, <a href="invenioSearch.module.js.html#line1167">line 1167</a>
     </li></ul></dd>
     
 
@@ -324,6 +335,534 @@
 
 
 
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".link"><span class="type-signature">(static) </span>link<span class="signature">(scope, element, attrs, vm)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Force apply the attributes to the scope
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>scope</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">service</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The scope of this element.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>element</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">service</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Element that this direcive is assigned to.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>attrs</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">service</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Attribute of this element.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vm</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="invenioSearchController.html">invenioSearchController</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Invenio search controller.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="invenioSearch.module.js.html">invenioSearch.module.js</a>, <a href="invenioSearch.module.js.html#line1039">line 1039</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".templateUrl"><span class="type-signature">(static) </span>templateUrl<span class="signature">(element, attrs)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Choose template for search loading
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>element</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">service</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Element that this direcive is assigned to.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>attrs</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">service</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Attribute of this element.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="invenioSearch.module.js.html">invenioSearch.module.js</a>, <a href="invenioSearch.module.js.html#line1243">line 1243</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>Minimal template `template.html` usage
+    &lt;select name="select-order-{{ data.sortKey }}" ng-model="whichOrder" ng-change="handleChange()">
+      &lt;option value="x" ng-selected="whichOrder != '-'">asc.&lt;/option>
+      &lt;option value="-" ng-selected="whichOrder == '-'">desc.&lt;/option>
+    &lt;/select></code></pre>
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".templateUrl"><span class="type-signature">(static) </span>templateUrl<span class="signature">(element, attrs)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Choose template for search loading
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>element</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">service</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Element that this direcive is assigned to.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>attrs</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">service</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Attribute of this element.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="invenioSearch.module.js.html">invenioSearch.module.js</a>, <a href="invenioSearch.module.js.html#line1127">line 1127</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>Minimal template `template.html` usage
+     &lt;select ng-model="data.selectedOption">
+       &lt;option ng-repeat="option in data.availableOptions.options"
+         value="{{ option.value }}"
+         ng-selected="isSelected(option.value)"
+       >{{ option.title }}&lt;/option>
+     &lt;/select></code></pre>
 
 
 
