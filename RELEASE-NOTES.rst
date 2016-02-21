@@ -1,8 +1,8 @@
 ==========================
- Invenio-Search-JS v0.1.1
+ Invenio-Search-JS v0.1.2
 ==========================
 
-Invenio-Search-JS v0.1.1 was released on February 19, 2016.
+Invenio-Search-JS v0.1.2 was released on February 22, 2016.
 
 About
 -----
@@ -14,8 +14,7 @@ Invenio-Search client library for building the web UI.
 What's new
 ----------
 
-- Adds support for multilevel facets.
-- Adds sort and sort order directives.
+- Increases test coverage.
 
 Installation
 ------------
