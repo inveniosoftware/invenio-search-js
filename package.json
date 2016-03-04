@@ -1,6 +1,6 @@
 {
   "name": "invenio-search-js",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Javascript search components for Invenio-Search",
   "author": {
     "name": "CERN",
