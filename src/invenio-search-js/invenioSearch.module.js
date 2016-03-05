@@ -1263,11 +1263,10 @@
    * @name invenioSearchAPI
    * @namespace invenioSearchAPI
    * @param {service} $http - Angular http requests service.
-   * @param {service} $q - Angular promise services.
    * @description
    *     Call the search API
    */
-  function invenioSearchAPI($http,  $q) {
+  function invenioSearchAPI($http) {
 
     /**
      * Make a search request to the API
@@ -1276,41 +1275,13 @@
      * @returns {service} promise
      */
     function search(args, hidden) {
-
-      // Initialize the promise
-      var deferred = $q.defer();
-
-      /**
-       * Search on success
-       * @memberof invenioSearchAPI
-       * @param {Object} response - The search API response.
-       * @returns {Object} response
-       */
-      function success(response) {
-        deferred.resolve(response);
-      }
-
-      /**
-       * Search on error
-       * @memberof invenioSearchAPI
-       * @param {Object} response - The search API error response.
-       * @returns {Object} error
-       */
-      function error(response) {
-        deferred.reject(response);
-      }
-
       // Place all parameters together
       var params = angular.copy(args);
       // extend parameters with the hidden params
       params.params = angular.merge(params.params, hidden || {});
 
-      // Make the request
-      $http(params).then(
-        success,
-        error
-      );
-      return deferred.promise;
+      // Make the request and return promise object
+      return $http(params);
     }
     return {
       search: search
@@ -1318,7 +1289,7 @@
   }
 
   // Inject the necessary angular services
-  invenioSearchAPI.$inject = ['$http', '$q'];
+  invenioSearchAPI.$inject = ['$http'];
 
   /**
    * @ngdoc service
