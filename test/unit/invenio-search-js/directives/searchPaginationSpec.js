@@ -47,6 +47,8 @@ describe('Check search pagination directive', function() {
       scope = $rootScope;
 
       $httpBackend.whenGET('/api?page=1&size=20').respond(200, {success: true});
+      $httpBackend.whenGET('/api?page=7&q=jarvis:+hello%3F%3F&size=20').respond(200, {success: true});
+      $httpBackend.whenGET('/api?page=1&q=jarvis:+hello%3F%3F&size=20').respond(200, {success: true});
       $httpBackend.whenGET('/api?page=7&q=jarvis:+hello+do+you+here+me%3F&size=20').respond(200, {success: true});
       $httpBackend.whenGET('/api?page=1&q=jarvis:+hello+do+you+here+me%3F&size=3').respond(200, {success: true});
       $httpBackend.whenGET('/api?page=3&q=jarvis:+hello+do+you+here+me%3F&size=3').respond(200, {success: true});
@@ -216,5 +218,17 @@ describe('Check search pagination directive', function() {
     };
     scope.$digest();
     expect(template.find('li').eq(5).text().trim()).to.be.equal('7');
+  });
+
+  it('should reset page parameter if any of args changed but page', function() {
+    scope.vm.invenioSearchArgs = {
+      page: 7,
+      size: 20,
+      q: 'jarvis: hello do you here me?'
+    };
+    scope.vm.invenioSearchArgs = {
+      q: 'jarvis: hello??'
+    };
+    expect(scope.vm.invenioSearchCurrentArgs.params.page).to.be.equal(1);
   });
 });
