@@ -239,6 +239,10 @@
      */
     function invenioSearchRequestSearch(event, params) {
       if(!angular.equals(vm.invenioSearchCurrentArgs.params, params)) {
+        // If the page is the same and the query different reset it
+        if (vm.invenioSearchCurrentArgs.params.page === params.page) {
+          params.page = 1;
+        }
         // Merge
         angular.forEach(params, function(value, key) {
           vm.invenioSearchCurrentArgs.params[key] = value;
@@ -249,7 +253,7 @@
           vm.invenioSearchCurrentArgs.params
         );
 
-        //// Update url
+        // Update url
         invenioSearchHandler.set(vm.invenioSearchCurrentArgs.params);
         // Update searcbox query
         vm.userQuery = vm.invenioSearchArgs.q;
