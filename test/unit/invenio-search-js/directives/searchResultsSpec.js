@@ -48,6 +48,7 @@ describe('Check search results directive', function() {
 
       // Expect a request
       $httpBackend.whenGET('/api?page=1&size=20').respond(200, {success: true});
+      $httpBackend.whenGET('/api?gotham+city=Harley+Quinn&metropolis=Superman').respond(200, {success: true});
 
       template = '<invenio-search search-endpoint="/api"> ' +
        '<invenio-search-results template="src/invenio-search-js/templates/results.html">' +
@@ -98,4 +99,13 @@ describe('Check search results directive', function() {
     expect(template.find('li').eq(0).text().trim()).to.be.equal('1: I\'m Iron Man');
     expect(template.find('li').eq(1).text().trim()).to.be.equal('2: I\'m Captain America');
   });
+
+  it('should change the query from the url', inject(function($location) {
+    $location.search({
+      'gotham city': 'Harley Quinn',
+      'metropolis': 'Superman'
+    });
+    scope.$digest();
+    expect(scope.vm.invenioSearchArgs.metropolis).to.be.equal('Superman');
+  }));
 });

@@ -55,12 +55,9 @@ describe('Unit: testing controllers', function() {
     ctrl = $controller('invenioSearchController', {
       $scope : scope,
     });
-
   }));
 
   it('should have parameters', function() {
-
-
     // The invenio search args.size should be 10
     expect(ctrl.invenioSearchCurrentArgs.params.size).to.be.equal(20);
     // The invenio search method should be GET
@@ -68,14 +65,14 @@ describe('Unit: testing controllers', function() {
 
     // Scope change values
     ctrl.invenioSearchArgs.url = '/api';
-    scope.$digest();
+    //scope.$digest();
     ctrl.invenioSearchArgs.method = 'POST';
     ctrl.invenioSearchArgs.page = 10;
     ctrl.invenioSearchError = false;
     ctrl.invenioSearchLoading = true;
     ctrl.invenioSearchArgs.q = 'jarvis: Iron man';
 
-    scope.$digest();
+    //scope.$digest();
 
     ctrl.invenioSearchError = false;
 
@@ -92,7 +89,6 @@ describe('Unit: testing controllers', function() {
   });
 
   it('should make a successful request', function() {
-
     // Expect a request
     $httpBackend.expectGET('/success?page=1&q=jarvis:+call+Hulk&size=10');
 
@@ -102,15 +98,10 @@ describe('Unit: testing controllers', function() {
       size: 10,
       q: 'jarvis: call Hulk'
     };
-    scope.$digest();
     ctrl.invenioDoSearch();
-    $httpBackend.flush();
   });
 
   it('should make a request with error', function() {
-
-    // Expect a request
-    $httpBackend.expect('GET', '/error?page=1&q=jarvis:+call+Hulk&size=10');
 
     ctrl.invenioSearchCurrentArgs.url = '/error';
     ctrl.invenioSearchCurrentArgs.params = {
@@ -119,9 +110,7 @@ describe('Unit: testing controllers', function() {
       q: 'jarvis: call Hulk'
     };
 
-    scope.$digest();
     ctrl.invenioDoSearch();
-    $httpBackend.flush();
   });
 
   it('should parse the url', function() {
@@ -132,4 +121,17 @@ describe('Unit: testing controllers', function() {
     expect(parsed.sort).to.be.equal('-title');
   });
 
+  it('should force search with the url', function() {
+    scope.$broadcast('invenio.search.request', {
+      fight: {
+        round_1: 'Jessica Jones vs Harley Quinn',
+        round_2: 'Superman vs Luke',
+        round_3: 'Batman vs The Punisher'
+      }
+    }, true);
+    // Expect to be the following
+    expect(ctrl.invenioSearchCurrentArgs.params.fight.round_1).to.be.equal(
+      'Jessica Jones vs Harley Quinn'
+    );
+  });
 });

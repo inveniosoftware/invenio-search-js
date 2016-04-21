@@ -100,6 +100,10 @@ describe('Check search facets directive', function() {
     })
   );
 
+  afterEach(function() {
+    $httpBackend.flush();
+  });
+
   it('should have two facets options', function() {
     expect(template.find('[type=checkbox]').length).to.be.equal(4);
     // First choice should be Batman

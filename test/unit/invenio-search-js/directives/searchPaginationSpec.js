@@ -47,6 +47,7 @@ describe('Check search pagination directive', function() {
       scope = $rootScope;
 
       $httpBackend.whenGET('/api?page=1&size=20').respond(200, {success: true});
+      $httpBackend.whenGET('/api?page=1&q=jarvis:+hello%3F%3F&size=3').respond(200, {success: true});
       $httpBackend.whenGET('/api?page=7&q=jarvis:+hello%3F%3F&size=20').respond(200, {success: true});
       $httpBackend.whenGET('/api?page=1&q=jarvis:+hello%3F%3F&size=20').respond(200, {success: true});
       $httpBackend.whenGET('/api?page=7&q=jarvis:+hello+do+you+here+me%3F&size=20').respond(200, {success: true});

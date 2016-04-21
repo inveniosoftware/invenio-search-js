@@ -47,26 +47,26 @@ describe('Check search error directive', function() {
 
       scope = $rootScope;
 
-      template = '<invenio-search search-endpoint="/api"> ' +
+      template = '<invenio-search search-endpoint="/error"> ' +
        '<invenio-search-error message="Yo error" template="src/invenio-search-js/templates/error.html">' +
        '</invenio-search-error>' +
        '</invenio-search>';
 
       // Expect a request
-      $httpBackend.whenGET('/api?page=1&size=20').respond(200, {success: true});
+      $httpBackend.whenGET('/error?page=1&size=20').respond(500, {
+        data: {
+          message: 'Tell me, do you bleed?'
+        }
+      });
 
       template = $compile(template)(scope);
-      scope.$digest();
-
-      scope.vm.invenioSearchError = {
-        message: 'Error'
-      };
       scope.$digest();
     })
   );
 
   it('should have attributes', function() {
-    expect(template.scope().vm.invenioSearchError.message).to.be.equal('Error');
+    $httpBackend.flush();
+    expect(template.scope().vm.invenioSearchErrorResults.data.message).to.be.equal('Tell me, do you bleed?');
     expect(template.find('div.alert').text().trim()).to.be.equal('Error: Yo error');
   });
 });

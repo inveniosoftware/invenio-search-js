@@ -31,7 +31,8 @@
    * @description
    *    Invenio search controller.
    */
-  function invenioSearchController($scope, invenioSearchHandler, invenioSearchAPI) {
+  function invenioSearchController($scope, invenioSearchHandler,
+    invenioSearchAPI) {
 
     // Assign controller to `vm`
     var vm = this;
@@ -66,13 +67,6 @@
       }
     };
 
-    // Search URL arguments
-    // Get
-    vm.invenioSearchGetUrlArgs = invenioSearchGetUrlArgs;
-
-    // Invenio Do Search
-    vm.invenioDoSearch = invenioDoSearch;
-
     ////////////
 
     // Functions
@@ -81,7 +75,7 @@
      * Get url parameters.
      * @memberof invenioSearchController
      * @function invenioSearchGetUrlArgs
-     * @returnis {Object} The url parameters.
+     * @returns {Object} The url parameters.
      */
     function invenioSearchGetUrlArgs() {
       return invenioSearchHandler.get();
@@ -142,35 +136,6 @@
     }
 
     /**
-     * Merge `invenioSearchArgs` with updated parameters
-     * @memberof invenioSearchController
-     * @function invenioSearchLocationChange
-     * @param {Object} event - The event object.
-     * @param {Object} nextUrl - The new url value.
-     * @param {Object} currentUrl - The current url value.
-     */
-    function invenioSearchLocationChange(event, nextUrl, currentUrl) {
-      if (!angular.equals(nextUrl, currentUrl)) {
-        $scope.$broadcast(
-          'invenio.search.request', invenioSearchHandler.get()
-        );
-      }
-    }
-
-    /**
-     * Set url parameters.
-     * @memberof invenioSearchController
-     * @function invenioSearchParamsChange
-     * @param {Object} newParameters - The new search parameters.
-     * @param {Object} currentParameters - The current search response.
-     */
-    function invenioSearchParamsChange(newParameters, currentParameters) {
-      if (!angular.equals(newParameters, currentParameters)) {
-        $scope.$broadcast('invenio.search.request', newParameters);
-      }
-    }
-
-    /**
      * Parse query string args from a full URL
      * @memberof invenioSearchController
      * @function parseURLQueryString
@@ -191,26 +156,27 @@
       return data;
     }
 
-    vm.parseURLQueryString = parseURLQueryString;
-
     /**
      * Process a search error
      * @memberof invenioSearchController
      * @function invenioSearchErrorHandler
-     * @param {Object} error - The error trace.
+     * @param {Object} evt - The event object.
+     * @param {Object} response - The error response.
      */
-    function invenioSearchErrorHandler(event, response) {
+    function invenioSearchErrorHandler(evt, response) {
       vm.invenioSearchErrorResults = response.data;
       // Set the new error
-      vm.invenioSearchError = event;
+      vm.invenioSearchError = evt;
     }
 
     /**
      * Process a search success
      * @memberof invenioSearchController
      * @function invenioSearchSuccessHandler
+     * @param {Object} evt - The event object.
+     * @param {Object} response - The success response.
      */
-    function invenioSearchSuccessHandler(event, response) {
+    function invenioSearchSuccessHandler(evt, response) {
       // Set results
       vm.invenioSearchResults = response.data;
       // Set error to none
@@ -233,36 +199,13 @@
     }
 
     /**
-     * Process the search request
+     * Process the initialization
      * @memberof invenioSearchController
-     * @function invenioSearchRequestSearch
+     * @function invenioSearchInitialization
+     * @param {Object} evt - The event object.
+     * @param {Object} params - The search parameters.
      */
-    function invenioSearchRequestSearch(event, params) {
-      if(!angular.equals(vm.invenioSearchCurrentArgs.params, params)) {
-        // If the page is the same and the query different reset it
-        if (vm.invenioSearchCurrentArgs.params.page === params.page) {
-          params.page = 1;
-        }
-        // Merge
-        angular.forEach(params, function(value, key) {
-          vm.invenioSearchCurrentArgs.params[key] = value;
-        });
-
-        // InvenioSearchArgs update
-        vm.invenioSearchArgs = angular.copy(
-          vm.invenioSearchCurrentArgs.params
-        );
-
-        // Update url
-        invenioSearchHandler.set(vm.invenioSearchCurrentArgs.params);
-        // Update searcbox query
-        vm.userQuery = vm.invenioSearchArgs.q;
-        // Do the search
-        vm.invenioDoSearch();
-      }
-    }
-
-    function invenioSearchInitialization(event, params) {
+    function invenioSearchInitialization(evt, params) {
       vm.invenioSearchCurrentArgs = angular.merge(
         {},
         vm.invenioSearchCurrentArgs,
@@ -274,6 +217,8 @@
       );
       // Update url
       invenioSearchHandler.set(vm.invenioSearchArgs);
+      // Repalce url, resolves browser's back button issues
+      invenioSearchHandler.replace();
       // Update searcbox query
       vm.userQuery = vm.invenioSearchArgs.q;
       // Invenio Search is now initialized
@@ -284,9 +229,110 @@
       $scope.$broadcast('invenio.search.initialiazed');
     }
 
+    /**
+     * Process the search request
+     * @memberof invenioSearchController
+     * @function invenioSearchRequestSearch
+     * @param {Object} evt - The event object.
+     * @param {Object} params - The search parameters.
+     * @param {Boolean} force - Ommit merge and force search with parameters.
+     */
+    function invenioSearchRequestSearch(evt, params, force) {
+      // If force (mostly comming from the url overwrite everything
+      if (force !== undefined && force === true) {
+        vm.invenioSearchCurrentArgs.params = angular.copy(params);
+      } else {
+        // Otherwise just merge
+
+        // If the page is the same and the query different reset it
+        if (vm.invenioSearchCurrentArgs.params.page === params.page) {
+          params.page = 1;
+        }
+        // FIXME: Maybe loDash?
+        angular.forEach(params, function(value, key) {
+          vm.invenioSearchCurrentArgs.params[key] = value;
+        });
+      }
+
+      // InvenioSearchArgs update
+      vm.invenioSearchArgs = angular.copy(
+        vm.invenioSearchCurrentArgs.params
+      );
+
+      // Update url
+      invenioSearchHandler.set(vm.invenioSearchCurrentArgs.params);
+      // Update searcbox query
+      vm.userQuery = vm.invenioSearchArgs.q;
+      // Do the search
+      vm.invenioDoSearch();
+    }
+
+    /**
+     * Process the search URL request
+     * @memberof invenioSearchController
+     * @function invenioSearchRequestFromLocation
+     * @param {Object} evt - The event object.
+     * @param {String} before - The current url.
+     * @param {String} after - The new url.
+     */
+    function invenioSearchRequestFromLocation(evt, before, after) {
+      // When location changed check if there is any difference
+      var urlArgs = invenioSearchHandler.get();
+      if (!angular.equals(urlArgs, vm.invenioSearchCurrentArgs.params)) {
+        // Request a search
+        $scope.$broadcast('invenio.search.request', urlArgs, true);
+      }
+    }
+
+    /**
+     * Process the search URL request
+     * @memberof invenioSearchController
+     * @function invenioSearchRequestFromChange
+     * @param {Object} evt - The event object.
+     * @param {Object} params - The requested search parameters.
+     */
+    function invenioSearchRequestFromChange(evt, params) {
+      // Get the current and apply the changes
+      var current = angular.copy(vm.invenioSearchCurrentArgs.params);
+      angular.forEach(params, function(value, key) {
+        current[key] = angular.copy(params[key]);
+      });
+      if (!angular.equals(vm.invenioSearchCurrentArgs.params, current)) {
+        // Request a search
+        $scope.$broadcast('invenio.search.request', current);
+      }
+    }
+
+    /**
+     * Process the search URL request
+     * @memberof invenioSearchController
+     * @function invenioSearchRequestFromInternal
+     * @param {Object} before - The current object.
+     * @param {Object} after - The new object.
+     */
+    function invenioSearchRequestFromInternal(after, before) {
+      // When the vm invenioSearchArgs changed
+      if (!angular.equals(after, vm.invenioSearchCurrentArgs.params)) {
+        // Request a search
+        $scope.$broadcast('invenio.search.request', after);
+      }
+    }
+
+    ////////////
+
+    // Assignments
+
+    // Search URL arguments
+    vm.invenioSearchGetUrlArgs = invenioSearchGetUrlArgs;
+    // Invenio Do Search
+    vm.invenioDoSearch = invenioDoSearch;
+    // URL Parser
+    vm.parseURLQueryString = parseURLQueryString;
+
     ////////////
 
     // Listeners
+
     // When invenio.search initialazation request
     $scope.$on('invenio.search.initialazation', invenioSearchInitialization);
     // When the search was requested
@@ -295,14 +341,19 @@
     $scope.$on('invenio.search.success', invenioSearchSuccessHandler);
     // When the search errored
     $scope.$on('invenio.search.error', invenioSearchErrorHandler);
+    // When change parameters have been requested
+    $scope.$on('invenio.search.params.change', invenioSearchRequestFromChange);
     // When URL parameters changed
-    $scope.$on('$locationChangeStart', invenioSearchLocationChange);
-    // When invenioSearchArgs.params has changed
-    $scope.$watch(
-      'vm.invenioSearchArgs', invenioSearchParamsChange, true
-    );
+    $scope.$on('$locationChangeStart', invenioSearchRequestFromLocation);
 
     ////////////
+
+    // Watchers
+
+    // When invenioSearchArgs.params has changed
+    $scope.$watch(
+      'vm.invenioSearchArgs', invenioSearchRequestFromInternal, true
+    );
   }
 
   invenioSearchController.$inject = [
@@ -687,6 +738,7 @@
      * @param {invenioSearchController} vm - Invenio search controller.
      */
     function link(scope, element, attrs, vm) {
+      // Make a copy of the paremeters
       scope.handler = angular.copy(
         vm.invenioSearchCurrentArgs.params
       );
@@ -694,10 +746,13 @@
       /**
        * Handle click on the element
        * @memberof link
+       * @function handleClick
+       * @param {string} key - The facet key.
+       * @param {string} value - The facet value.
        */
       function handleClick(key, value) {
         // Make sure it's an object
-        scope.handler[key] = (scope.handler[key] === undefined) ? [] :   scope.handler[key];
+        scope.handler[key] = (scope.handler[key] === undefined) ? [] : scope.handler[key];
         // Get the index
         var index = (scope.handler[key]).indexOf(value);
         if (index === -1) {
@@ -709,10 +764,35 @@
         }
         // Update Args
         var params = {};
-        params[key] = scope.handler[key];
-        scope.$broadcast('invenio.search.request', params);
+        params[key] = angular.copy(scope.handler[key]);
+        // Make sure that we send an array
+        // Update the params args
+        scope.$broadcast('invenio.search.params.change', params);
       }
+
+      /**
+       * Get values from key
+       * @memberof link
+       * @function getValues
+       * @param {string} key - The facet key.
+       */
+      function getValues(key) {
+        return (typeof scope.handler[key] === 'string') ? [scope.handler[key]] : scope.handler[key];
+      }
+
+      // Listeners
+
+      // On search finish update facets
+      scope.$on('invenio.search.finished', function(evt) {
+        scope.handler = angular.copy(vm.invenioSearchCurrentArgs.params);
+      });
+
+      // Assignments
+
+      // Clicking the facets
       scope.handleClick = handleClick;
+      // Return the values
+      scope.getValues = getValues;
     }
 
     /**
@@ -1353,10 +1433,19 @@
       $location.search(args);
     }
 
+    /**
+     * Replace the url without changing state
+     * @memberof invenioSearchHandler
+     */
+    function replace() {
+      $location.replace();
+    }
+
     ////////////
 
     return {
       get: get,
+      replace: replace,
       set: set,
     };
   }
