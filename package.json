@@ -1,6 +1,6 @@
 {
   "name": "invenio-search-js",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "Javascript search components for Invenio-Search",
   "author": {
     "name": "CERN",
@@ -13,7 +13,8 @@
   "dependencies": {
     "angular": "=1.4.8",
     "angular-mocks": "=1.4.8",
-    "angular-scenario": "=1.4.8"
+    "angular-scenario": "=1.4.8",
+    "d3": "^3.5.17"
   },
   "devDependencies": {
     "chai": "^1.9.1",
