@@ -374,7 +374,8 @@
    *    Usage:
    *    <invenio-search
    *     search-endpoint='SEARCH_PROVIDER_URL'
-   *     search-hidden-params='{"collection": "Collection"}'>
+   *     search-headers='{"Accept": "application/json"}'
+   *     search-hidden-params='{"collection": "Collection"}'
    *     search-extra-params='{"page": 2, "size": 5}'>
    *        ... Any children directives
    *    </invenio-search>
@@ -396,6 +397,7 @@
       var collectedArgs = {
         url: attrs.searchEndpoint,
         method: attrs.searchMethod || 'GET',
+        headers: JSON.parse(attrs.searchHeaders || '{}'),
       };
 
       // Add any extra parameters
