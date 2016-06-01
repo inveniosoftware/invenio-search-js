@@ -1387,6 +1387,9 @@
 
       angular.merge(options, angular.fromJson(attrs.options));
 
+      options.width = d3.select(options.histogramId).node().
+          getBoundingClientRect().width;
+
       /**
        * Handle the change of the selected range
        * @memberof link
@@ -1646,7 +1649,8 @@
           .attr({
             'width': options.width,
             'height': 35
-          }).style('fill', options.selectColor);
+          }).style('fill', options.selectColor)
+          .style('overflow', 'visible');
 
       selectorSvg.append('line').attr(
           {'x1': 0, 'x2': options.width, 'y1': 5.5, 'y2': 5.5}).style({
@@ -1735,6 +1739,7 @@
 
       brushHandleGroup.append('text')
           .attr('text-anchor', 'middle')
+          .style('transform', 'rotate(-45deg) translateX(-15px)')
           .text(function (d, i) {
             return parseInt((brush.extent()[i === 0 ? 1 : 0]));
           }).attr('class', function (d, i) {
@@ -1799,8 +1804,8 @@
         return d.key;
       });
 
-      rangeDomain[0] = rangeDomain[0] - 0.2;
-      rangeDomain[1] = rangeDomain[1] + 0.2;
+      rangeDomain[0] = rangeDomain[0] - (0.1 * data.length);
+      rangeDomain[1] = rangeDomain[1] + (0.1 * data.length);
 
       xScale = d3.scale.linear().domain(rangeDomain).range([options.margins.left,
         options.width - options.margins.left - options.margins.right
