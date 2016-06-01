@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>invenioSearchLoading - Documentation</title>
+    <title>invenioSearchRange - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">invenioSearchLoading</h1>
+    <h1 class="page-title">invenioSearchRange</h1>
     
 
     
@@ -41,7 +41,7 @@
 <header>
     
         <h2>
-        invenioSearchLoading
+        invenioSearchRange
         </h2>
         
     
@@ -51,7 +51,7 @@
     <div class="container-overview">
     
         
-            <div class="description">The invenioSearchLoading directive</div>
+            <div class="description">The invenioSearchRange directive</div>
         
 
         
@@ -86,7 +86,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="invenioSearch.module.js.html">invenioSearch.module.js</a>, <a href="invenioSearch.module.js.html#line506">line 506</a>
+        <a href="invenioSearch.module.js.html">invenioSearch.module.js</a>, <a href="invenioSearch.module.js.html#line1343">line 1343</a>
     </li></ul></dd>
     
 
@@ -102,11 +102,8 @@
             <h3>Example</h3>
             
     <pre class="prettyprint"><code>Usage:
-   &lt;invenio-search-loading
-    message='{{ _('Loading') }}'
-    template='TEMPLATE_PATH'>
-       ... Any children directives
-   &lt;/invenio-search-loading></code></pre>
+   &lt;div style="width: 220px; margin: 0 auto;" id="year_hist">&lt;/div>
+   &lt;div style="width: 220px; margin: 0 auto;" id="year_select">&lt;/div></code></pre>
 
         
     
@@ -214,7 +211,7 @@
 
             
 
-            <td class="description last">Element that this direcive is assigned to.</td>
+            <td class="description last">Element that this directive is assigned to.</td>
         </tr>
 
     
@@ -301,7 +298,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="invenioSearch.module.js.html">invenioSearch.module.js</a>, <a href="invenioSearch.module.js.html#line532">line 532</a>
+        <a href="invenioSearch.module.js.html">invenioSearch.module.js</a>, <a href="invenioSearch.module.js.html#line1366">line 1366</a>
     </li></ul></dd>
     
 
@@ -324,168 +321,6 @@
 
 
 
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".templateUrl"><span class="type-signature">(static) </span>templateUrl<span class="signature">(element, attrs)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    Choose template for search loading
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>element</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">service</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Element that this direcive is assigned to.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>attrs</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">service</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Attribute of this element.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="invenioSearch.module.js.html">invenioSearch.module.js</a>, <a href="invenioSearch.module.js.html#line547">line 547</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
-    
-    <pre class="prettyprint"><code>Minimal template `template.html` usage
-       &lt;div ng-show='vm.invenioSearchLoading'>
-         &lt;i class='fa fa-loading'>&lt;/i> {{ loadingMessage }}
-       &lt;/div></code></pre>
 
 
 
