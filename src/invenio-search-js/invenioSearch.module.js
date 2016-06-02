@@ -1351,7 +1351,7 @@
    *    <div style="width: 220px; margin: 0 auto;" id="year_hist"></div>
    *    <div style="width: 220px; margin: 0 auto;" id="year_select"></div>
    */
-  function invenioSearchRange(invenioSearchRangeFactory) {
+  function invenioSearchRange(invenioSearchRangeFactory, $window) {
 
     // Functions
 
@@ -1367,7 +1367,6 @@
 
       // Default options for histogram
       var options = {
-        width: 200,
         height: 70,
         name: 'years',
         histogramId: '#hist',
@@ -1385,10 +1384,17 @@
         padding: 2
       };
 
+      var getRangeWidth = function() {
+        var elem = d3.select(options.histogramId).node();
+        return elem.getBoundingClientRect().width;
+      };
+
       angular.merge(options, angular.fromJson(attrs.options));
 
-      options.width = d3.select(options.histogramId).node().
-          getBoundingClientRect().width;
+      var responsive = !options.width;
+      if (responsive) {
+        var initialWidth = getRangeWidth();
+      }
 
       /**
        * Handle the change of the selected range
@@ -1419,6 +1425,10 @@
       function updateRange() {
         // Don't refresh the histogram if the update is a result of
         // moving the histogram bar
+        if (responsive) {
+          options.width = getRangeWidth() || initialWidth;
+        }
+
         if (vm.invenioSearchResults.aggregations) {
           var buckets = vm.invenioSearchResults.aggregations[options.name].buckets;
           if (buckets.length > 0) {
@@ -1446,6 +1456,9 @@
       }
 
       scope.$on('invenio.search.finished', updateRange);
+      if (responsive) {
+        angular.element($window).bind('resize', updateRange);
+      }
     }
 
     /**
@@ -1472,7 +1485,7 @@
     };
   }
 
-  invenioSearchRange.$inject = ['invenioSearchRangeFactory'];
+  invenioSearchRange.$inject = ['invenioSearchRangeFactory', '$window'];
 
   ////////////
 
@@ -1815,6 +1828,8 @@
           options.margins.right) -
           (data.length * options.padding)) / (rangeEnd - rangeStart));
 
+      barWidth = Math.max(1, barWidth);
+
       var maxValue = d3.max(data, function (d) {
         return d.doc_count;
       });
@@ -1825,6 +1840,7 @@
       var rectEnter = group.selectAll('.bar')
           .data(data).enter().append('g').attr('class', 'bar');
 
+      console.log(barWidth);
       rectEnter.append('rect').attr('height', function (d) {
         return yScale(d.doc_count);
       }).attr('width', barWidth)

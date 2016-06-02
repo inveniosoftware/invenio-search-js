@@ -23,57 +23,75 @@
 
 'use strict';
 
-  var $compile;
-  var $httpBackend;
-  var $rootScope;
-  var scope;
-  var template;
+var $compile;
+var $httpBackend;
+var $rootScope;
+var scope;
+var template;
 
 var buckets = [{
-                'doc_count': 23,
-                'key': 2015,
-                'key_as_string': '2015'
-              }, {
-                'doc_count': 11,
-                'key': 2017,
-                'key_as_string': '2017'
-              }];
+  'doc_count': 23,
+  'key': 2015,
+  'key_as_string': '2015'
+}, {
+  'doc_count': 11,
+  'key': 2017,
+  'key_as_string': '2017'
+}];
 
 var beforeTests =
-    function (_$compile_, _$rootScope_, _$httpBackend_) {
+  function (_$compile_, _$rootScope_, _$httpBackend_) {
 
-      $compile = _$compile_;
-      $httpBackend = _$httpBackend_;
-      $rootScope = _$rootScope_;
+    $compile = _$compile_;
+    $httpBackend = _$httpBackend_;
+    $rootScope = _$rootScope_;
 
-      scope = $rootScope;
+    scope = $rootScope;
 
-      // Expect a request
-      $httpBackend.whenGET(/.*/).respond(200, {
-        aggregations: {
-          'years': {
-            'buckets': buckets
+    // Expect a request
+    $httpBackend.whenGET(/.*/).respond(200, {
+      aggregations: {
+        'years': {
+          'buckets': buckets
+        }
+      }
+    });
+
+    template = '<invenio-search search-endpoint="/api"> ' +
+      '<invenio-search-range template=' +
+      '"src/invenio-search-js/templates/range.html" ' +
+      'options=\'{"histogramId": "#year_hist",' +
+      '"selectionId": "#year_select",' +
+      '"name": "years"}\'' +
+      '></invenio-search-range>' +
+      '</invenio-search>';
+
+    template = $compile(template)(scope);
+
+    var d3Select = d3.select;
+    d3.select = function (elem) {
+      var rv = d3Select.call(this, elem);
+
+      if (elem == '#year_hist') {
+        rv.node = function () {
+          return {
+            getBoundingClientRect: function () {
+              return { width: 180 };
+            }
           }
         }
-      });
+      }
 
-      template = '<invenio-search search-endpoint="/api"> ' +
-        '<invenio-search-range template=' +
-        '"src/invenio-search-js/templates/range.html" ' +
-        'options=\'{"histogramId": "#year_hist",' +
-        '"selectionId": "#year_select",' +
-        '"name": "years",' +
-        '"width": "180"}\'' +
-        '></invenio-search-range>' +
-        '</invenio-search>';
-
-      template = $compile(template)(scope);
-      scope.$apply();
-      document.body.insertAdjacentHTML('afterbegin', template.html());
-      d3.event = {target: $('g.bar').first()[0]};
+      return rv;
     };
 
-var callElementHandler = function(element, handlerName) {
+    scope.$apply();
+    document.body.insertAdjacentHTML('afterbegin', template.html());
+    d3.event = {target: $('g.bar').first()[0]};
+
+  };
+
+var callElementHandler = function (element, handlerName) {
   var d3Element = d3.select(element)[0][0];
   d3Element[handlerName]({target: d3Element});
 };
@@ -109,7 +127,7 @@ describe('Check search range factory', function () {
 
   });
 
-  it('should change the params', function() {
+  it('should change the params', function () {
     var paramsSpy = sinon.spy();
 
     scope.vm.invenioSearchArgs['years'] = '2015--2015';
@@ -126,7 +144,7 @@ describe('Check search range factory', function () {
     expect(paramsSpy).to.have.been.called.once;
   });
 
-  it('should call the callback on change', inject(function(invenioSearchRangeFactory) {
+  it('should call the callback on change', inject(function (invenioSearchRangeFactory) {
     var callbackSpy = sinon.spy();
 
     var opts = {
@@ -164,7 +182,7 @@ describe('Check search range directive', function () {
 
   beforeEach(inject(beforeTests));
 
-  it('should refresh', function() {
+  it('should refresh', function () {
     scope.vm.invenioSearchArgs['years'] = '1992--2016';
     scope.vm.invenioSearchArgs.q = 'hello';
     scope.$apply();
