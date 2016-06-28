@@ -761,8 +761,14 @@
           // Add the value in the list
           scope.handler[key].push(value);
         } else {
-          // Just remove it from the list
-          scope.handler[key].splice(index, 1);
+          // When the params are populated from a direct link, 
+          // the type is a string, not a list, so splice will fail.
+          if (typeof scope.handler[key] === "string") {
+            scope.handler[key] = [];
+          } else {
+            // Just remove it from the list
+            scope.handler[key].splice(index, 1);
+          }
         }
         // Update Args
         var params = {};
