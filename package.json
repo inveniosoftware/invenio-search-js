@@ -4,7 +4,7 @@
   "description": "Javascript search components for Invenio-Search",
   "author": {
     "name": "CERN",
-    "email": "info@invenio-software.org"
+    "email": "info@inveniosoftware.org"
   },
   "repository": {
     "type": "git",

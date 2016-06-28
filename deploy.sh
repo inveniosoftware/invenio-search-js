@@ -38,7 +38,7 @@ cd gh-pages
 
 # set the user to invenio-developer
 git config user.name "invenio-developers"
-git config user.email "info@invenio-software.org"
+git config user.email "info@inveniosoftware.org"
 
 # add and commit
 git add .
