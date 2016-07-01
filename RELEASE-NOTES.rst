@@ -1,8 +1,8 @@
 ==========================
- Invenio-Search-JS v0.2.0
+ Invenio-Search-JS v0.2.1
 ==========================
 
-Invenio-Search-JS v0.2.0 was released on June 1, 2016.
+Invenio-Search-JS v0.2.1 was released on July 1, 2016.
 
 About
 -----
@@ -14,7 +14,20 @@ Invenio-Search client library for building the web UI.
 What's new
 ----------
 
-- Fixes browser's back button issue
+Improvements
+------------
+
+- Makes text slanted on range directive to improve visibility when texts
+  overlap.
+
+- Changes range directive to respond to window size changes.
+
+Bug fixes
+---------
+
+- Fixes errors that occurred when deselecting facets on page change or
+  when a page with preselected facets have been accessed. (#66) (#67)
+  (#71)
 
 Installation
 ------------
