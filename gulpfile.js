@@ -135,7 +135,7 @@ gulp.task('demo', function() {
   gulp.src(rootDirectory)
     .pipe(plugins.webserver({
       livereload: true,
-      open: '/example/index.html'
+      open: '/examples/index.html'
   }));
 });
 
