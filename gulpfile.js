@@ -1,6 +1,6 @@
 /*
  * This file is part of Invenio.
- * Copyright (C) 2015, 2016 CERN.
+ * Copyright (C) 2015, 2016, 2017 CERN.
  *
  * Invenio is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -42,7 +42,7 @@ var sourceDirectory = path.join(rootDirectory, './src');
 var sourceFiles = [
 
   // Make sure module files are handled first
-  path.join(sourceDirectory, '/**/*.module.js'),
+  path.join(sourceDirectory, '/**/*.js'),
 
   // Then add all JavaScript files
   path.join(sourceDirectory, '/**/*.js'),

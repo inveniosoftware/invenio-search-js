@@ -1,6 +1,6 @@
 /*
  * This file is part of Invenio.
- * Copyright (C) 2015, 2016 CERN.
+ * Copyright (C) 2015, 2016, 2017 CERN.
  *
  * Invenio is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -53,6 +53,7 @@ module.exports = function(config) {
       'node_modules/angular-mocks/angular-mocks.js',
       'node_modules/d3/d3.js',
       'node_modules/d3-tip/index.js',
+      'src/*/*.js',
       'src/**/*.js',
       'src/**/*.html',
       'test/unit/**/*.js',
@@ -73,8 +74,12 @@ module.exports = function(config) {
 
     // Coverage reporter
     coverageReporter: {
-      type: 'lcov',
-      dir: 'coverage/'
+      dir: 'coverage/',
+      reporters: [
+        {type: 'text'},
+        {type: 'html', subdir: 'report-html'},
+        {type: 'lcov', subdir: 'report-lcov'}
+      ]
     },
 
 

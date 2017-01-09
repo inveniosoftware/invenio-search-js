@@ -1,6 +1,6 @@
 /*
  * This file is part of Invenio.
- * Copyright (C) 2015, 2016 CERN.
+ * Copyright (C) 2015, 2016, 2017 CERN.
  *
  * Invenio is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -30,14 +30,16 @@ describe('Unit: testing controllers', function() {
   var $rootScope;
   var ctrl;
   var scope;
+  //var invenioSearchAPI;
 
   // Inject the angular module
   beforeEach(angular.mock.module('invenioSearch'));
 
-  beforeEach(inject(function(_$httpBackend_, _$rootScope_, _$controller_) {
+  beforeEach(inject(function(_$httpBackend_, _$rootScope_, _$controller_, _invenioSearchAPI_) {
     $controller = _$controller_;
     $httpBackend = _$httpBackend_;
     $rootScope = _$rootScope_;
+   // invenioSearchAPI = _invenioSearchAPI_;
     var response = {
       data: {
         link: {
@@ -52,9 +54,24 @@ describe('Unit: testing controllers', function() {
     $httpBackend.whenPOST('/api?page=10&q=jarvis:+Iron+man&size=20').respond(200, {success: true});
 
     scope = $rootScope;
-    ctrl = $controller('invenioSearchController', {
+    ctrl = $controller('invenioSearchCtrl', {
       $scope : scope,
+      invenioSearchAPI: _invenioSearchAPI_
     });
+  }));
+
+  it('using the invenioSearchHandler', inject(function(invenioSearchHandler) {
+    var data = {
+      q: 'Looking for Harley Quinn.',
+      a: 'Wrong Universe pal...'
+    };
+    // Set the data
+    invenioSearchHandler.set(data);
+    // Replace the url
+    invenioSearchHandler.replace();
+    // Get the data
+    var results = invenioSearchHandler.get();
+    expect(results).to.deep.equal(data);
   }));
 
   it('should have parameters', function() {
