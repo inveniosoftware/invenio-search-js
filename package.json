@@ -61,7 +61,7 @@
     "build": "gulp build",
     "coverage": "gulp coveralls",
     "demo": "gulp demo",
-    "docs": "jsdoc  -c .jsdoc --pedantic src/",
+    "docs": "jsdoc -c .jsdoc -u examples/tutorials/ --pedantic src/",
     "test": "gulp test"
   },
   "license": "GPLv2",

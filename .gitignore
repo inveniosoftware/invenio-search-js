@@ -16,3 +16,4 @@ libpeerconnection.log
 
 dist/
 coverage/
+docs/

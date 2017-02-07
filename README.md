@@ -37,4 +37,6 @@ Docs
 How to use?
 -----------
 
-Check out the `example/` to see how to configure your app.
+* Getting started [guide](http://inveniosoftware.github.io/invenio-search-js/tutorial-1_started.html)
+* Customization [guide](http://inveniosoftware.github.io/invenio-search-js/tutorial-2_customize.html)
+* Check out the `example/` to see how to configure your app.
