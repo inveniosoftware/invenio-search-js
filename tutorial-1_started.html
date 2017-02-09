@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Tutorial: Getting started</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Tutorial: Getting started</h1>
+
+    <section>
+
+<header>
+    
+
+    <h2>Getting started</h2>
+</header>
+
+<article>
+    <h1>Basic usage</h1><p><code>Invenio-Search-Js</code> help you easily display results from the
+Invenio REST API.</p>
+<p>The angular module has been split in different directives
+which each one is responsible for a specific action on the app.</p>
+<h2>Initialize the app</h2><pre class="prettyprint source"><code>&lt;script src=&quot;path/to/angular.js&quot;>&lt;/script>
+&lt;script src=&quot;path/to/invenio-search-js.js&quot;>&lt;/script>
+&lt;script>
+  // Bootstrap the angular app to the specific `div` with id `search`
+  angular.element(document).ready(function() {
+    angular.bootstrap(
+      document.getElementById(&quot;search&quot;), ['invenioSearch']
+    );
+  });
+&lt;/script></code></pre><h3>Example only with only search results</h3><p>We have the following API and we'd like to display the results with the
+<code>invenio-search-js</code>.</p>
+<pre class="prettyprint source"><code>$ curl /api/super/cities
+
+{
+  hits: {
+    total: 2
+  },
+  data: [
+    {
+      &quot;name&quot;: &quot;Harley Quinn&quot;,
+      &quot;city&quot;: &quot;Midway&quot;
+    },
+    {
+      &quot;name&quot;: &quot;Jessica Jones&quot;,
+      &quot;city&quot;: &quot;New York&quot;
+    }
+  ]
+}</code></pre><p>For this example we'll use the <code>&lt;invenio-search-results&gt;</code> directive for displaying the
+results.</p>
+<pre class="prettyprint source"><code>&lt;div id=&quot;search&quot;>
+  &lt;invenio-search search-endpoint=&quot;/api/super/cities&quot;>
+    &lt;invenio-search-results template=&quot;results.html&quot;>&lt;/invenio-search-results>
+  &lt;/invenio-search>
+&lt;/div></code></pre><p>The <code>results.html</code> will look like this:</p>
+<pre class="prettyprint source"><code>&lt;ul>
+  &lt;li ng-repeat=&quot;hero in vm.invenioSearchResults.data track by $index&quot;>
+    &lt;h5>{{ hero.name }}&lt;/h5>
+    &lt;p>{{ hero.city }}&lt;/p>
+  &lt;/li>
+&lt;/ul></code></pre><p><strong>Note</strong>: the <code>vm.invenioSearchResults</code> contains the response of the API hence we
+use <code>vm.invenioSearchResults.data</code> to iterate the results.</p>
+<h3>A more complex example</h3><p>We have the following API and we'd like to display the results with the
+<code>invenio-search-js</code> and include number of results, pagination and loading message.</p>
+<pre class="prettyprint source"><code>$ curl /api/super/cities
+
+{
+  hits: {
+    total: 6
+  },
+  data: [
+    {
+      &quot;name&quot;: &quot;Harley Quinn&quot;,
+      &quot;city&quot;: &quot;Midway&quot;
+    },
+    {
+      &quot;name&quot;: &quot;Jessica Jones&quot;,
+      &quot;city&quot;: &quot;New York&quot;
+    },
+    {
+      &quot;name&quot;: &quot;Luke Cage&quot;,
+      &quot;city&quot;: &quot;New York&quot;
+    },
+    {
+      &quot;name&quot;: &quot;Batman&quot;,
+      &quot;city&quot;: &quot;Gotham&quot;
+    },
+    {
+      &quot;name&quot;: &quot;Iron Man&quot;,
+      &quot;city&quot;: &quot;New York&quot;
+    },
+    {
+      &quot;name&quot;: &quot;Flash&quot;,
+      &quot;city&quot;: &quot;Central&quot;
+    }
+  ]
+}</code></pre><pre class="prettyprint source"><code>&lt;div id=&quot;search&quot;>
+  &lt;invenio-search search-endpoint=&quot;/api/super/cities&quot;>
+    &lt;!-- search bar -->
+    &lt;invenio-search-bar template=&quot;searchBar.html&quot; placeholder=&quot;Start typing&quot;>&lt;/invenio-search-bar>
+    &lt;!-- number of results -->
+    &lt;invenio-search-count template=&quot;count.html&quot;>&lt;/invenio-search-count>
+    &lt;!-- loading message -->
+    &lt;invenio-search-loading template=&quot;loading.html&quot; message=&quot;Loading&quot;>&lt;/invenio-search-loading>
+    &lt;!-- search results -->
+    &lt;invenio-search-results template=&quot;results.html&quot;>&lt;/invenio-search-results>
+    &lt;!-- search pagination -->
+    &lt;invenio-search-pagination template=&quot;pagination.html&quot;>&lt;/invenio-search-pagination>
+  &lt;/invenio-search>
+&lt;/div></code></pre><h4><code>searchBar.html</code></h4><pre class="prettyprint source"><code>&lt;input placeholder=&quot;{{ placeholder }}&quot; ng-model=&quot;vm.userQuery&quot; /></code></pre><p><strong>Note</strong>: <code>ng-model=&quot;vm.userQuery&quot;</code> is important for mapping the user input
+to the application.</p>
+<p>Also the request parameter for search will always be <code>q</code>. For example if user
+types <code>Harley</code> the API request will be <code>GET /api/super/cities/?q=Harley</code></p>
+<h4><code>count.html</code></h4><pre class="prettyprint source"><code>&lt;p>{{ vm.invenioSearchResults.hits.total }}&lt;/p></code></pre><p><strong>Note</strong>: <code>vm.invenioSearchResults.hits.total</code> is returned by the server.</p>
+<h4><code>loading.html</code></h4><pre class="prettyprint source"><code>&lt;div ng-show=&quot;vm.invenioSearchLoading&quot;>{{ loadingMessage }}&lt;/div></code></pre><p>You have access to <code>vm.invenioSearchLoading</code> which indicates if there is any ongoing
+request, you can use it in any template inside the app.</p>
+<h4><code>results.html</code></h4><pre class="prettyprint source"><code>&lt;ul>
+  &lt;li ng-repeat=&quot;hero in vm.invenioSearchResults.data track by $index&quot;>
+    &lt;h5>{{ hero.name }}&lt;/h5>
+    &lt;p>{{ hero.city }}&lt;/p>
+  &lt;/li>
+&lt;/ul></code></pre><p><strong>Note</strong>: the <code>vm.invenioSearchResults</code> contains the response of the API hence we
+use <code>vm.invenioSearchResults.data</code> to iterate the results.</p>
+<h4><code>pagination.html</code></h4><pre class="prettyprint source"><code>&lt;ul class=&quot;pagination&quot; ng-if=&quot;vm.invenioSearchResults.hits.total&quot;>
+  &lt;li ng-show=&quot;showGoToFirstLast&quot; ng-class=&quot;paginationHelper.getFirstClass()&quot;>
+    &lt;a href=&quot;#&quot; ng-click=&quot;paginationHelper.changePage(1)&quot; aria-label=&quot;First&quot;>
+      &lt;span aria-hidden=&quot;true&quot;>&lt;&lt;&lt;span>
+    &lt;/a>
+  &lt;/li>
+  &lt;li ng-class=&quot;paginationHelper.getPrevClass()&quot;>
+    &lt;a href=&quot;#&quot; ng-click=&quot;paginationHelper.changePage(paginationHelper.previous())&quot; aria-label=&quot;Previous&quot;>
+      &lt;span aria-hidden=&quot;true&quot;>&lt;&lt;/span>
+    &lt;/a>
+  &lt;/li>
+  &lt;li ng-class=&quot;paginationHelper.getPageClass(page.value)&quot; ng-repeat=&quot;page in paginatePages&quot;>
+    &lt;a href=&quot;#&quot; ng-click=&quot;paginationHelper.changePage(page.value)&quot; alt=&quot;{{ page.title }}&quot;>{{ page.value }}&lt;/a>
+  &lt;/li>
+  &lt;li ng-class=&quot;paginationHelper.getNextClass()&quot;>
+    &lt;a href=&quot;#&quot; ng-click=&quot;paginationHelper.changePage(paginationHelper.next())&quot; aria-label=&quot;Next&quot;>
+      &lt;span aria-hidden=&quot;true&quot;>>&lt;/span>
+    &lt;/a>
+  &lt;/li>
+  &lt;li ng-show=&quot;showGoToFirstLast&quot; ng-class=&quot;paginationHelper.getLastClass()&quot;>
+    &lt;a href=&quot;#&quot; ng-click=&quot;paginationHelper.changePage(paginationHelper.total())&quot; aria-label=&quot;Last&quot;>
+      &lt;span aria-hidden=&quot;true&quot;>>>&lt;/span>
+    &lt;/a>
+  &lt;/li>
+&lt;/ul></code></pre><p>The app provides for pagination helper functions.</p>
+</article>
+
+</section>
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="invenioSearch.html">invenioSearch</a></li><li><a href="invenioSearchAPI.html">invenioSearchAPI</a></li><li><a href="invenioSearchBar.html">invenioSearchBar</a></li><li><a href="invenioSearchConfiguration.html">invenioSearchConfiguration</a></li><li><a href="invenioSearchCount.html">invenioSearchCount</a></li><li><a href="invenioSearchCtrl.html">invenioSearchCtrl</a></li><li><a href="invenioSearchError.html">invenioSearchError</a></li><li><a href="invenioSearchFacets.html">invenioSearchFacets</a></li><li><a href="invenioSearchHandler.html">invenioSearchHandler</a></li><li><a href="invenioSearchLoading.html">invenioSearchLoading</a></li><li><a href="invenioSearchPagination.html">invenioSearchPagination</a></li><li><a href="invenioSearchRange.html">invenioSearchRange</a></li><li><a href="invenioSearchRangeFactory.html">invenioSearchRangeFactory</a></li><li><a href="invenioSearchResults.html">invenioSearchResults</a></li><li><a href="invenioSearchSelectBox.html">invenioSearchSelectBox</a></li><li><a href="invenioSearchSortOrder.html">invenioSearchSortOrder</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-1_started.html">Getting started</a></li><li><a href="tutorial-2_customize.html">Customization</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Feb 09 2017 08:24:30 GMT+0000 (UTC)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
