@@ -16,7 +16,7 @@ Installation
 Demo
 ----
 
-    $ cd example; npm install; cd ..
+    $ pushd examples/simple; npm install; popd
     $ npm run-script demo
 
 Navigate to `http://localhost:8000` to see the `demo`.
