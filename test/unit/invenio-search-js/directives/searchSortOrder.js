@@ -47,6 +47,8 @@ describe('Check search sort order directive', function() {
       scope = $rootScope;
       // Expect a request
       $httpBackend.whenGET('/api?page=1&size=20').respond(200, {success: true});
+      $httpBackend.whenGET('/api?page=1&size=20&sort=').respond(200, {success: true});
+      $httpBackend.whenGET('/api?page=1&size=20&sort=-').respond(200, {success: true});
       $httpBackend.whenGET('/api?page=1&size=20&sort=date').respond(200, {success: true});
       $httpBackend.whenGET('/api?page=1&size=20&sort=-date').respond(200, {success: true});
       $httpBackend.whenGET('/api?page=1&size=20&sort=-title').respond(200, {success: true});
@@ -92,7 +94,7 @@ describe('Check search sort order directive', function() {
     expect(scope.vm.invenioSearchArgs.sort).to.be.equal('date');
   }));
 
-  it('should have change the sort to desceding', inject(function($timeout) {
+  it('should change the sort to desceding', inject(function($timeout) {
     // Select should have date as value
     scope.vm.invenioSearchArgs.sort = "-title";
     template.find('select').eq(0).val('desc');
@@ -100,6 +102,24 @@ describe('Check search sort order directive', function() {
     scope.$digest();
     $timeout.flush();
     expect(scope.vm.invenioSearchArgs.sort).to.be.equal('-title');
+    // Change value
+    scope.vm.invenioSearchArgs.sort = "-date";
+    template.find('select').eq(0).val('asc');
+    template.find('select').eq(0).triggerHandler('change');
+    scope.$digest();
+    expect(scope.vm.invenioSearchArgs.sort).to.be.equal('date');
+  }));
+
+  it('should change the sort to desceding on default sort key', inject(function($timeout) {
+    // Select should have empty value
+    scope.vm.invenioSearchArgs.sort = ''
+    scope.vm.invenioSearchCurrentArgs.sort = ''
+    scope.data = {};
+    template.find('select').eq(0).val('desc');
+    template.find('select').eq(0).triggerHandler('change');
+    scope.$digest();
+    $timeout.flush();
+    expect(scope.vm.invenioSearchArgs.sort).to.be.equal('-');
     // Change value
     scope.vm.invenioSearchArgs.sort = "-date";
     template.find('select').eq(0).val('asc');

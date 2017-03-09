@@ -72,7 +72,9 @@ function invenioSearchSortOrder() {
       // Get current sort field
       var sortfield = (
         vm.invenioSearchArgs[scope.sortKey] ||
-        vm.invenioSearchCurrentArgs[scope.sortKey] || '');
+        vm.invenioSearchCurrentArgs[scope.sortKey] ||
+        this.data.selectedOption ||
+        '');
       if (sortfield.charAt(0) === '-'){
         sortfield = sortfield.slice(1, sortfield.length);
       }

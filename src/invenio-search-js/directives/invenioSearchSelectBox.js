@@ -69,7 +69,8 @@ function invenioSearchSelectBox() {
       // Ignore if `-` character is in front of either value or check
       var check = (
         vm.invenioSearchArgs[scope.data.sortKey] ||
-        vm.invenioSearchSortArgs[scope.data.sortKey] || ''
+        vm.invenioSearchSortArgs[scope.data.sortKey] ||
+        scope.data.defaultSortBy || ''
       );
       if (check.charAt(0) === '-'){
         check = check.slice(1, check.length);
@@ -77,7 +78,7 @@ function invenioSearchSelectBox() {
       if (value.charAt(0) === '-'){
         value = value.slice(1, value.length);
       }
-      return  check === value || false;
+      return check === value;
     }
 
     function handleFieldChange(){
@@ -91,28 +92,24 @@ function invenioSearchSelectBox() {
       */
     function onCurrentSearchChange(newValue, oldValue) {
       if(newValue){
-        var check = scope.data.selectedOption;
-        // Normalize names
-        if (check.charAt(0) === '-'){
-          check = check.slice(1, check.length);
-        }
         var value = null;
-        if (newValue.charAt(0) === '-'){
+        if (newValue.charAt(0) === '-') {
           value = newValue.slice(1, newValue.length);
         } else {
           value = newValue;
         }
-        if(check !== value){
-          scope.data.selectedOption = newValue;
+        if (value.length) {
+          scope.data.selectedOption = value;
         }
       }
     }
 
     // Attach to scope
-    scope.data  = {
+    scope.data = {
       availableOptions: JSON.parse(attrs.availableOptions || '{}'),
       selectedOption: vm.invenioSearchArgs[attrs.sortKey] || null,
-      sortKey:  attrs.sortKey || 'sort',
+      sortKey: attrs.sortKey || 'sort',
+      defaultSortBy: attrs.defaultSortBy,
     };
 
     if(scope.data.selectedOption === null) {
