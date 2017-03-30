@@ -1,8 +1,8 @@
 ==========================
- Invenio-Search-JS v1.0.0
+ Invenio-Search-JS v1.1.0
 ==========================
 
-Invenio-Search-JS v1.0.0 was released on February 7, 2017.
+Invenio-Search-JS v1.1.0 was released on 30 March, 2017.
 
 About
 -----
