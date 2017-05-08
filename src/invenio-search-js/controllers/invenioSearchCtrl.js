@@ -212,10 +212,13 @@ function invenioSearchCtrl($scope, invenioSearchHandler,
       {},
       vm.invenioSearchCurrentArgs.params
     );
-    // Update url
-    invenioSearchHandler.set(vm.invenioSearchArgs);
-    // Repalce url, resolves browser's back button issues
-    invenioSearchHandler.replace();
+    // Update url if is not disabled
+    if (!vm.disableUrlHandler) {
+      // Update url
+      invenioSearchHandler.set(vm.invenioSearchArgs);
+      // Repalce url, resolves browser's back button issues
+      invenioSearchHandler.replace();
+    }
     // Update searcbox query
     vm.userQuery = vm.invenioSearchArgs.q;
     // Invenio Search is now initialized
@@ -256,8 +259,11 @@ function invenioSearchCtrl($scope, invenioSearchHandler,
       vm.invenioSearchCurrentArgs.params
     );
 
-    // Update url
-    invenioSearchHandler.set(vm.invenioSearchCurrentArgs.params);
+    // Update url if is not disabled
+    if (!vm.disableUrlHandler) {
+      // Update url
+      invenioSearchHandler.set(vm.invenioSearchCurrentArgs.params);
+    }
     // Update searcbox query
     vm.userQuery = vm.invenioSearchArgs.q;
     // Do the search
@@ -273,11 +279,13 @@ function invenioSearchCtrl($scope, invenioSearchHandler,
     * @param {String} after - The new url.
     */
   function invenioSearchRequestFromLocation(evt, before, after) {
-    // When location changed check if there is any difference
-    var urlArgs = invenioSearchHandler.get();
-    if (!angular.equals(urlArgs, vm.invenioSearchCurrentArgs.params)) {
-      // Request a search
-      $scope.$broadcast('invenio.search.request', urlArgs, true);
+    if (!vm.disableUrlHandler) {
+      // When location changed check if there is any difference
+      var urlArgs = invenioSearchHandler.get();
+      if (!angular.equals(urlArgs, vm.invenioSearchCurrentArgs.params)) {
+        // Request a search
+        $scope.$broadcast('invenio.search.request', urlArgs, true);
+      }
     }
   }
 
