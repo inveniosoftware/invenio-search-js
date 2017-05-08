@@ -138,6 +138,20 @@ describe('Unit: testing controllers', function() {
     expect(parsed.sort).to.be.equal('-title');
   });
 
+  it('should make a successful request without updating the url', function() {
+    // Expect a request
+    $httpBackend.expectGET('/success');
+    // Disable url
+    ctrl.disableUrlHandler = true;
+    ctrl.invenioSearchCurrentArgs.url = '/success';
+    ctrl.invenioSearchCurrentArgs.params = {
+      page: 1,
+      size: 10,
+      q: 'jarvis: call Hulk'
+    };
+    ctrl.invenioDoSearch();
+  });
+
   it('should force search with the url', function() {
     scope.$broadcast('invenio.search.request', {
       fight: {

@@ -66,6 +66,9 @@ function invenioSearch() {
       params: vm.invenioSearchGetUrlArgs()
     };
 
+    // Url listerner
+    vm.disableUrlHandler = (attrs.disableUrlHandler) ? true : false;
+
     vm.invenioSearchHiddenParams = JSON.parse(
       attrs.searchHiddenParams  || '{}'
     );
