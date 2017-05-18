@@ -108,7 +108,7 @@ describe('Check search facets directive', function() {
     expect(template.find('[type=checkbox]').length).to.be.equal(4);
     // First choice should be Batman
     expect(template.find('.panel-body').eq(0).text()).to.contain('Batman is Bruce Wayne');
-    // First choice should be Superman
+    // Second choice should be Superman
     expect(template.find('.panel-body').eq(1).text()).to.contain('Superman is Clark Kent');
   });
 
@@ -131,5 +131,29 @@ describe('Check search facets directive', function() {
     template.find('[type=checkbox]').eq(2).triggerHandler('click');
     expect(template.find('[type=checkbox]').eq(2)[0].checked).to.be.equal(false);
     expect(scope.vm.invenioSearchArgs.superman.length).to.be.equal(1);
+  }));
+
+  it('should sort the options by the order attribute', inject(function($timeout) {
+    // Normal order - First choice should be Batman
+    expect(template.find('.panel-title').eq(0).text()).to.be.equal('batman');
+    // Normal order - Second choice should be Superman
+    expect(template.find('.panel-title').eq(1).text()).to.be.equal('superman');
+
+    template = '<invenio-search search-endpoint="/api"> ' +
+     '<invenio-search-facets ' +
+     'order="superman,batman"' +
+     'template="src/invenio-search-js/templates/facets.html">' +
+     '</invenio-search-facets>' +
+     '</invenio-search>';
+
+    var searchResults = scope.vm.invenioSearchResults;
+    template = $compile(template)(scope);
+    scope.vm.invenioSearchResults = searchResults;
+    scope.$digest();
+
+    // Custom order - First choice should be Superman
+    expect(template.find('.panel-title').eq(0).text()).to.be.equal('superman');
+    // Custom order - Second choice should be Batman
+    expect(template.find('.panel-title').eq(1).text()).to.be.equal('batman');
   }));
 });
