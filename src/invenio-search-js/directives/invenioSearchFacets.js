@@ -30,6 +30,7 @@
   * @example
   *    Usage:
   *    <invenio-search-facets
+  *     order='facet1,facet2,facet3'
   *     template='TEMPLATE_PATH'>
   *        ... Any children directives
   *    </invenio-search-facets>
@@ -51,6 +52,14 @@ function invenioSearchFacets() {
     scope.handler = angular.copy(
       vm.invenioSearchCurrentArgs.params
     );
+
+    // Set the order of the facets
+    if (attrs.order) {
+        scope.aggOrder = attrs.order.split(',');
+    }
+
+    // Sort the aggregations if an order is specified
+    orderAggregations(vm.invenioSearchResults.aggregations);
 
     /**
       * Handle click on the element
@@ -95,12 +104,33 @@ function invenioSearchFacets() {
       return (typeof scope.handler[key] === 'string') ? [scope.handler[key]] : scope.handler[key];
     }
 
+    /**
+      * Order the aggregations if a custom order is provided
+      * @memberof link
+      * @function orderAggregations
+      * @param {object} aggregations - The unordered aggregations.
+      */
+    function orderAggregations(aggregations) {
+        if (aggregations) {
+            var aggKeys = scope.aggOrder || Object.keys(aggregations);
+            scope.orderedAggs = aggKeys.map(function (key) {
+                return {
+                    key: key,
+                    value: aggregations[key]
+                };
+            });
+        }
+    }
+
     // Listeners
 
     // On search finish update facets
     scope.$on('invenio.search.finished', function(evt) {
       scope.handler = angular.copy(vm.invenioSearchCurrentArgs.params);
     });
+
+    // If the aggregations change, sort them.
+    scope.$watch('vm.invenioSearchResults.aggregations', orderAggregations);
 
     // Assignments
 
