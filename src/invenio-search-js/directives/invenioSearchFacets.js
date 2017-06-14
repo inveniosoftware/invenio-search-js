@@ -69,8 +69,11 @@ function invenioSearchFacets() {
       * @param {string} value - The facet value.
       */
     function handleClick(key, value) {
-      // Make sure it's an object
+      // Make sure it's an array
       scope.handler[key] = (scope.handler[key] === undefined) ? [] : scope.handler[key];
+      if (typeof scope.handler[key] === 'string') {
+        scope.handler[key] = [scope.handler[key]];
+      }
       // Get the index
       var index = (scope.handler[key]).indexOf(value);
       if (index === -1) {
