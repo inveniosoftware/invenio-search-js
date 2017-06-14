@@ -338,8 +338,8 @@ function invenioSearchCtrl($scope, invenioSearchHandler,
 
   // Listeners
 
-  // When invenio.search initialazation request
-  $scope.$on('invenio.search.initialazation', invenioSearchInitialization);
+  // When invenio.search initialization request
+  $scope.$on('invenio.search.initialization', invenioSearchInitialization);
   // When the search was requested
   $scope.$on('invenio.search.request', invenioSearchRequestSearch);
   // When the search was successful

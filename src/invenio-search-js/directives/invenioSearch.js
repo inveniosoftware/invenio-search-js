@@ -82,7 +82,7 @@ function invenioSearch() {
     );
 
     // Brodcast ready to initialization
-    scope.$broadcast('invenio.search.initialazation', params);
+    scope.$broadcast('invenio.search.initialization', params);
   }
 
   ////////////
