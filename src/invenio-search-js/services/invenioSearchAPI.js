@@ -30,7 +30,7 @@
   * @description
   *     Call the search API
   */
-function invenioSearchAPI($http,  $q) {
+function invenioSearchAPI($http, $q, $window) {
 
   /**
     * Make a search request to the API
@@ -65,9 +65,12 @@ function invenioSearchAPI($http,  $q) {
 
     // Place all parameters together
     var params = angular.copy(args);
-    // extend parameters with the hidden params
+    // Extend parameters with the hidden params
     params.params = angular.merge(params.params, hidden || {});
-
+    // Make sure that the query is encoded
+    if (params.params.q) {
+      params.params.q = $window.encodeURIComponent(params.params.q);
+    }
     // Make the request
     $http(params).then(
       success,
@@ -81,7 +84,7 @@ function invenioSearchAPI($http,  $q) {
 }
 
 // Inject the necessary angular services
-invenioSearchAPI.$inject = ['$http', '$q'];
+invenioSearchAPI.$inject = ['$http', '$q', '$window'];
 
 angular.module('invenioSearch.services')
   .service('invenioSearchAPI', invenioSearchAPI);
