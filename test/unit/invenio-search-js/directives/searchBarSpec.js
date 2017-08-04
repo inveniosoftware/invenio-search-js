@@ -23,7 +23,7 @@
 
 'use strict';
 
-describe('Check earchbar directive', function() {
+describe('Check searchbar directive', function() {
 
   var $compile;
   var $rootScope;
@@ -60,8 +60,8 @@ describe('Check earchbar directive', function() {
 
       // Expect a request
       $httpBackend.whenGET('/api?hero=jessicajones&page=1&size=20').respond(200, response);
-      $httpBackend.whenGET('/api?hero=jessicajones&page=1&q=jarvis:call+Jessica+Jones&size=20').respond(200, response);
-      $httpBackend.whenGET('/api?hero=jessicajones&page=1&q=jarvis:+get+to+the+choppa&size=20').respond(200, response);
+      $httpBackend.whenGET('/api?hero=jessicajones&page=1&q=jarvis%253Acall%2520Jessica%2520Jones&size=20').respond(200, response);
+      $httpBackend.whenGET('/api?hero=jessicajones&page=1&q=jarvis%253A%2520get%2520to%2520the%2520choppa&size=20').respond(200, response);
 
       // Compile
       template = $compile(template)(scope);
