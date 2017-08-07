@@ -28,6 +28,7 @@ describe('Check searchbar directive', function() {
   var $compile;
   var $rootScope;
   var $httpBackend;
+  var $window;
   var scope;
   var template;
 
@@ -38,12 +39,12 @@ describe('Check searchbar directive', function() {
   beforeEach(angular.mock.module('invenioSearch'));
 
   beforeEach(
-    inject(function(_$compile_, _$rootScope_, _$httpBackend_) {
+    inject(function(_$compile_, _$rootScope_, _$httpBackend_, _$window_) {
 
       $compile = _$compile_;
       $httpBackend = _$httpBackend_;
       $rootScope = _$rootScope_;
-
+      $window = _$window_;
       scope = $rootScope;
 
       template = '<invenio-search search-endpoint="/api" ' +
@@ -59,9 +60,10 @@ describe('Check searchbar directive', function() {
       }
 
       // Expect a request
-      $httpBackend.whenGET('/api?hero=jessicajones&page=1&size=20').respond(200, response);
-      $httpBackend.whenGET('/api?hero=jessicajones&page=1&q=jarvis%253Acall%2520Jessica%2520Jones&size=20').respond(200, response);
-      $httpBackend.whenGET('/api?hero=jessicajones&page=1&q=jarvis%253A%2520get%2520to%2520the%2520choppa&size=20').respond(200, response);
+      $httpBackend.whenGET('/api?page=1&size=20&hero=jessicajones').respond(200, response);
+      $httpBackend.whenGET('/api?page=1&size=20&q=' + $window.encodeURIComponent('jarvis: get to the choppa') + '&hero=jessicajones').respond(200, response);
+      $httpBackend.whenGET('/api?page=1&size=20&q=' + $window.encodeURIComponent('jarvis: get to the choppa') + '&hero=jessicajones').respond(200, response);
+      $httpBackend.whenGET('/api?page=1&size=20&q=' + $window.encodeURIComponent('jarvis:call Jessica Jones') + '&hero=jessicajones').respond(200, response);
 
       // Compile
       template = $compile(template)(scope);

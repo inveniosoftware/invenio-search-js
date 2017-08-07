@@ -28,6 +28,7 @@ describe('Check search results directive', function() {
   var $compile;
   var $httpBackend;
   var $rootScope;
+  var $window;
   var scope;
   var template;
 
@@ -38,17 +39,17 @@ describe('Check search results directive', function() {
   beforeEach(angular.mock.module('invenioSearch'));
 
   beforeEach(
-    inject(function(_$compile_, _$rootScope_, _$httpBackend_) {
+    inject(function(_$compile_, _$rootScope_, _$httpBackend_, _$window_) {
 
       $compile = _$compile_;
       $httpBackend = _$httpBackend_;
       $rootScope = _$rootScope_;
-
+      $window = _$window_;
       scope = $rootScope;
 
       // Expect a request
       $httpBackend.whenGET('/api?page=1&size=20').respond(200, {success: true});
-      $httpBackend.whenGET('/api?gotham+city=Harley+Quinn&metropolis=Superman').respond(200, {success: true});
+      $httpBackend.whenGET('/api?gotham%20city=' + $window.encodeURIComponent('Harley Quinn') +'&metropolis=Superman').respond(200, {success: true});
 
       template = '<invenio-search search-endpoint="/api"> ' +
        '<invenio-search-results template="src/invenio-search-js/templates/results.html">' +

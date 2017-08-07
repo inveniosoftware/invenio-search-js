@@ -67,10 +67,25 @@ function invenioSearchAPI($http, $q, $window) {
     var params = angular.copy(args);
     // Extend parameters with the hidden params
     params.params = angular.merge(params.params, hidden || {});
-    // Make sure that the query is encoded
-    if (params.params.q) {
-      params.params.q = $window.encodeURIComponent(params.params.q);
-    }
+    // Make sure the params are encoded
+    // By default Angular is not so strict and we have to override the
+    // serializer
+    // https://github.com/angular/angular.js/blob/464dde8bd12d9be8503678ac57529
+    // 45661e006a5/src/Angular.js#L1464-L1491
+    params.paramSerializer = function(data) {
+      var output = [];
+      angular.forEach(data, function(value, key) {
+        if (angular.isArray(value)) {
+          var that = this;
+          value.filter(function(item) {
+            that.push($window.encodeURIComponent(key) + '=' + $window.encodeURIComponent(item));
+          });
+        } else {
+          this.push($window.encodeURIComponent(key) + '=' + $window.encodeURIComponent(value));
+        }
+      }, output);
+      return output.join('&');
+    };
     // Make the request
     $http(params).then(
       success,

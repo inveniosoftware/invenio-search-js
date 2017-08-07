@@ -28,6 +28,7 @@ describe('Check search pagination directive', function() {
   var $compile;
   var $httpBackend;
   var $rootScope;
+  var $window;
   var scope;
   var template;
 
@@ -38,25 +39,26 @@ describe('Check search pagination directive', function() {
   beforeEach(angular.mock.module('invenioSearch'));
 
   beforeEach(
-    inject(function(_$compile_, _$rootScope_, _$httpBackend_) {
+    inject(function(_$compile_, _$rootScope_, _$httpBackend_, _$window_) {
 
       $compile = _$compile_;
       $httpBackend = _$httpBackend_;
       $rootScope = _$rootScope_;
+      $window = _$window_;
 
       scope = $rootScope;
 
       $httpBackend.whenGET('/api?page=1&size=20').respond(200, {success: true});
-      $httpBackend.whenGET('/api?page=1&q=jarvis%253A%2520hello%253F%253F&size=3').respond(200, {success: true});
-      $httpBackend.whenGET('/api?page=7&q=jarvis%253A%2520hello%253F%253F&size=20').respond(200, {success: true});
-      $httpBackend.whenGET('/api?page=1&q=jarvis%253A%2520hello%253F%253F&size=20').respond(200, {success: true});
-      $httpBackend.whenGET('/api?page=7&q=jarvis%253A%2520hello%2520do%2520you%2520here%2520me%253F&size=20').respond(200, {success: true});
-      $httpBackend.whenGET('/api?page=1&q=jarvis%253A%2520hello%2520do%2520you%2520here%2520me%253F&size=3').respond(200, {success: true});
-      $httpBackend.whenGET('/api?page=3&q=jarvis%253A%2520hello%2520do%2520you%2520here%2520me%253F&size=3').respond(200, {success: true});
-      $httpBackend.whenGET('/api?page=4&q=jarvis%253A%2520hello%2520do%2520you%2520here%2520me%253F&size=3').respond(200, {success: true});
-      $httpBackend.whenGET('/api?page=5&q=jarvis%253A%2520hello%2520do%2520you%2520here%2520me%253F&size=3').respond(200, {success: true});
-      $httpBackend.whenGET('/api?page=7&q=jarvis%253A%2520hello%2520do%2520you%2520here%2520me%253F&size=3').respond(200, {success: true});
-      $httpBackend.whenGET('/api?page=8&q=jarvis%253A%2520hello%2520do%2520you%2520here%2520me%253F&size=3').respond(200, {success: true});
+      $httpBackend.whenGET('/api?page=1&size=3&q=' + $window.encodeURIComponent('jarvis: hello??')).respond(200, {success: true});
+      $httpBackend.whenGET('/api?page=1&size=20&q=' + $window.encodeURIComponent('jarvis: hello do you here me?')).respond(200, {success: true});
+      $httpBackend.whenGET('/api?page=1&size=3&q=' + $window.encodeURIComponent('jarvis: hello do you here me?')).respond(200, {success: true});
+      $httpBackend.whenGET('/api?page=7&size=3&q=' + $window.encodeURIComponent('jarvis: hello do you here me?')).respond(200, {success: true});
+      $httpBackend.whenGET('/api?page=7&size=20&q=' + $window.encodeURIComponent('jarvis: hello do you here me?')).respond(200, {success: true});
+      $httpBackend.whenGET('/api?page=1&size=3&q=' + $window.encodeURIComponent('jarvis: hello do you here me?')).respond(200, {success: true});
+      $httpBackend.whenGET('/api?page=3&size=3&q=' + $window.encodeURIComponent('jarvis: hello do you here me?')).respond(200, {success: true});
+      $httpBackend.whenGET('/api?page=4&size=3&q=' + $window.encodeURIComponent('jarvis: hello do you here me?')).respond(200, {success: true});
+      $httpBackend.whenGET('/api?page=5&size=3&q=' + $window.encodeURIComponent('jarvis: hello do you here me?')).respond(200, {success: true});
+      $httpBackend.whenGET('/api?page=8&size=3&q=' + $window.encodeURIComponent('jarvis: hello do you here me?')).respond(200, {success: true});
 
       template = '<invenio-search search-endpoint="/api"> ' +
        '<invenio-search-pagination ' +
