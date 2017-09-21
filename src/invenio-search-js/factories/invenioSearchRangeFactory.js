@@ -38,7 +38,9 @@ function invenioSearchRangeFactory() {
 
     data.forEach(function (d) {
       d.key = +d.key_as_string;
-
+      if (options.showBarOnEmpty && d.doc_count === 0) {
+        d.doc_count = 0.01;
+      }
       if (options.selectionRange) {
         d.selected = d.key >= options.selectionRange.min &&
             d.key <= options.selectionRange.max;
@@ -108,7 +110,6 @@ function invenioSearchRangeFactory() {
 
     };
 
-
     var initialExtent = [rangeStart, rangeEnd];
     if (options.selectionRange) {
       var min_x = parseInt(xScale.domain()[0]);
@@ -146,7 +147,6 @@ function invenioSearchRangeFactory() {
 
         onSelection.apply(undefined, extent);
       });
-
 
     selectorSvg.append('g')
         .attr('class', 'brush')
@@ -269,8 +269,15 @@ function invenioSearchRangeFactory() {
         });
 
     rectEnter.on('mouseenter', function (d) {
-      d3.select(this).select('rect').style('fill', d3.rgb(d.selected ?
-        options.selectColor : options.barColor).brighter());
+      // Change the cursor
+      d3.select(this).style('cursor', 'pointer');
+      // Add opacity
+      d3.select(this).style('opacity', 0.8);
+      d3.select(this)
+        .select('rect')
+        .style('fill',
+          d3.rgb(d.selected ? options.selectColor : options.barColor).brighter()
+        );
         div.transition()
           .duration(200)
           .style('opacity', 0.9);
@@ -278,18 +285,24 @@ function invenioSearchRangeFactory() {
           .style('left', (d3.event.pageX) + 'px')
           .style('top', (d3.event.pageY - 28) + 'px');
     })
-        .on('mouseout', function (d) {
-          d3.select(this).select('rect').style('fill', d.selected ?
-            options.selectColor : options.barColor);
-          div.transition()
-            .duration(500)
-            .style('opacity', 0);
-        })
-        .on('click', function (d) {
-          updateBrushPosition([d.key, d.key]);
-          d3.select('.resize.e').style('display', 'inline');
-
-        });
+      .on('mouseout', function (d) {
+        // Change the cursor
+        d3.select(this).style('cursor', 'default');
+        // Change opacity
+        d3.select(this).style('opacity', 1);
+        d3.select(this)
+          .select('rect')
+          .style('fill',
+            d.selected ? options.selectColor : options.barColor
+          );
+        div.transition()
+          .duration(500)
+          .style('opacity', 0);
+      })
+      .on('click', function (d) {
+        updateBrushPosition([d.key, d.key]);
+        d3.select('.resize.e').style('display', 'inline');
+      });
 
     createSelector(placement, selectPlacement, onSelection);
   }
