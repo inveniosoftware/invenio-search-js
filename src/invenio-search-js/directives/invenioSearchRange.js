@@ -82,7 +82,7 @@ function invenioSearchRange(invenioSearchRangeFactory, $window) {
       * @memberof link
       * @param {int} from - The first element of the range
       * @param {int} to - The last element of the range
-        */
+      */
     function changeUserSelection(from, to) {
       if (!isNaN(from) && !isNaN(to)) {
         // Update Args
@@ -100,6 +100,17 @@ function invenioSearchRange(invenioSearchRangeFactory, $window) {
     }
 
     /**
+     * Remove the user selected range
+     */
+    function resetUserSelection() {
+        var params = {};
+        delete options.selectionRange;
+        params[options.name] = [];
+        // Request a new search
+        scope.$broadcast('invenio.search.params.change', params);
+    }
+
+    /**
       * Render a new histogram
       * @memberof link
       */
@@ -113,7 +124,7 @@ function invenioSearchRange(invenioSearchRangeFactory, $window) {
       if (vm.invenioSearchResults.aggregations) {
         var buckets = vm.invenioSearchResults.aggregations[options.name].buckets;
         if (buckets.length > 0) {
-          if (vm.invenioSearchArgs[options.name]) {
+          if (vm.invenioSearchArgs[options.name] && vm.invenioSearchArgs[options.name].length > 0) {
             // Parse URL parameters
             var args = vm.invenioSearchArgs[options.name].split('--');
             var rMin = +args[0];
