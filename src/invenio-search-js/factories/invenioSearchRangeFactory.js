@@ -143,8 +143,6 @@ function invenioSearchRangeFactory() {
           extent[1] = Math.min(extent[1], rangeEnd);
         }
 
-        updateBrushPosition(extent);
-
         onSelection.apply(undefined, extent);
       });
 
@@ -300,6 +298,8 @@ function invenioSearchRangeFactory() {
           .style('opacity', 0);
       })
       .on('click', function (d) {
+        // hide range_tooltip
+        div.transition().style('opacity', 0);
         updateBrushPosition([d.key, d.key]);
         d3.select('.resize.e').style('display', 'inline');
       });
