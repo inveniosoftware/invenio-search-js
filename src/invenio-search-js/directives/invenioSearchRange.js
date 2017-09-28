@@ -151,6 +151,7 @@ function invenioSearchRange(invenioSearchRangeFactory, $window) {
     if (responsive) {
       angular.element($window).bind('resize', updateRange);
     }
+    scope.resetRangeSelection = resetUserSelection;
   }
 
   /**
