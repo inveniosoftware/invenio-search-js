@@ -32,14 +32,15 @@
 function invenioSearchRangeFactory() {
 
   var histSvg, selectorSvg, xScale, yScale, brush, selected = [], options,
-    rangeStart, rangeEnd;
+    rangeStart, rangeEnd, previousExtent = [], valueToIgnore = 0.01;
 
   var processData = function (data) {
+    previousExtent = [];
 
     data.forEach(function (d) {
       d.key = +d.key_as_string;
       if (options.showBarOnEmpty && d.doc_count === 0) {
-        d.doc_count = 0.01;
+        d.doc_count = valueToIgnore;
       }
       if (options.selectionRange) {
         d.selected = d.key >= options.selectionRange.min &&
@@ -58,16 +59,18 @@ function invenioSearchRangeFactory() {
     rangeEnd = Math.max.apply(undefined, keys);
   };
 
-  var updateBrushPosition = function (range) {
+  var updateBrushPosition = function (range, shouldSendBrushEvent) {
     range = angular.copy(range);
 
-    if (range[0] === range[1]) {
+    if (range.length && range[0] === range[1]) {
       range[1] += 0.00001;
     }
 
     brush.extent(range);
     brush(d3.select('.brush').transition());
-    brush.event(d3.select('.brush').transition());
+    if (shouldSendBrushEvent) {
+      brush.event(d3.select('.brush').transition());
+    }
   };
 
   var createSelector = function (placement, selectPlacement, onSelection) {
@@ -143,7 +146,20 @@ function invenioSearchRangeFactory() {
           extent[1] = Math.min(extent[1], rangeEnd);
         }
 
-        onSelection.apply(undefined, extent);
+        var sameRangeAsPrevious = angular.equals(previousExtent, extent),
+            shouldSendBrushEvent = !sameRangeAsPrevious;
+
+        // updateBrushPosition is dispatching a brush event. This must be controlled to avoid infinite loops.
+        // TODO: replace flags/equals check to control the infinite loop with better code design. Needs refactoring.
+        // See: https://github.com/inveniosoftware/invenio-search-js/issues/104
+        updateBrushPosition(extent, shouldSendBrushEvent);
+
+        if (!sameRangeAsPrevious) {
+          if (!angular.equals(initialExtent, extent)) {
+            onSelection.apply(undefined, extent);
+          }
+          previousExtent = angular.copy(extent);
+        }
       });
 
     selectorSvg.append('g')
@@ -267,6 +283,9 @@ function invenioSearchRangeFactory() {
         });
 
     rectEnter.on('mouseenter', function (d) {
+      if (d.doc_count === valueToIgnore) {
+        return;
+      }
       // Change the cursor
       d3.select(this).style('cursor', 'pointer');
       // Add opacity
@@ -284,6 +303,9 @@ function invenioSearchRangeFactory() {
           .style('top', (d3.event.pageY - 28) + 'px');
     })
       .on('mouseout', function (d) {
+        if (d.doc_count === valueToIgnore) {
+          return;
+        }
         // Change the cursor
         d3.select(this).style('cursor', 'default');
         // Change opacity
@@ -298,9 +320,12 @@ function invenioSearchRangeFactory() {
           .style('opacity', 0);
       })
       .on('click', function (d) {
+        if (d.doc_count === valueToIgnore) {
+          return;
+        }
         // hide range_tooltip
         div.transition().style('opacity', 0);
-        updateBrushPosition([d.key, d.key]);
+        updateBrushPosition([d.key, d.key], true);
         d3.select('.resize.e').style('display', 'inline');
       });
 
