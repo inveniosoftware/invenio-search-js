@@ -111,6 +111,13 @@ function invenioSearchRange(invenioSearchRangeFactory, $window) {
     }
 
     /**
+     * Determine if the user selected a range
+     */
+    function isRangeSelected() {
+        return options.selectionRange === undefined ? false : true;
+    }
+
+    /**
       * Render a new histogram
       * @memberof link
       */
@@ -152,6 +159,7 @@ function invenioSearchRange(invenioSearchRangeFactory, $window) {
       angular.element($window).bind('resize', updateRange);
     }
     scope.resetRangeSelection = resetUserSelection;
+    scope.isRangeSelected = isRangeSelected;
   }
 
   /**
