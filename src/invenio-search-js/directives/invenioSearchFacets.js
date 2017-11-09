@@ -108,6 +108,17 @@ function invenioSearchFacets() {
     }
 
     /**
+      * Unselect/Reset options user selected in a facet
+      */
+    function resetSelection(key) {
+      var params = {};
+      scope.handler[key] = [];
+      params[key] = angular.copy(scope.handler[key]);
+      // Update the params args
+      scope.$broadcast('invenio.search.params.change', params);
+    }
+
+    /**
       * Order the aggregations if a custom order is provided
       * @memberof link
       * @function orderAggregations
@@ -141,6 +152,8 @@ function invenioSearchFacets() {
     scope.handleClick = handleClick;
     // Return the values
     scope.getValues = getValues;
+    //Reset selected facets
+    scope.resetSelection = resetSelection;
   }
 
   /**
