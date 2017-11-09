@@ -119,6 +119,13 @@ function invenioSearchFacets() {
     }
 
     /**
+      * Return true if any of the options in a facet is selected
+      */
+    function isFacetSelected(key) {
+      return scope.handler[key] !== undefined && scope.handler[key].length !== 0 ? true : false;
+    }
+
+    /**
       * Order the aggregations if a custom order is provided
       * @memberof link
       * @function orderAggregations
@@ -154,6 +161,8 @@ function invenioSearchFacets() {
     scope.getValues = getValues;
     //Reset selected facets
     scope.resetSelection = resetSelection;
+    // Check if facet options are selected
+    scope.isFacetSelected = isFacetSelected;
   }
 
   /**
