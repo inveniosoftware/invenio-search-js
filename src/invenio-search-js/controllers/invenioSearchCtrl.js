@@ -91,7 +91,7 @@ function invenioSearchCtrl($scope, invenioSearchHandler,
     vm.invenioSearchLoading = true;
     // Clear any previous errors
     vm.invenioSearchError = {};
-    vm.invenioSearchErrorsResults = {};
+    vm.invenioSearchErrorResults = {};
 
     /**
       * After the request finish proccesses
