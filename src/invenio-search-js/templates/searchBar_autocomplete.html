@@ -1,0 +1,16 @@
+<div class="cds-navbar-form-wrapper">
+<form class="cds-navbar-form">
+  <div mass-autocomplete class="form-group">
+    <input
+      autocomplete="off"
+      class="form-control"
+      type="text"
+      placeholder="{{ placeholder }}"
+      ng-model="vm.userQuery"
+      mass-autocomplete-item="autocomplete_options"
+      ng-model-options="{ debounce: { 'default': 500, 'blur': 0 } }"
+      ng-keyup="$event.keyCode == 13 && updateQuery()" />
+  </div>
+</form>
+</div>
+

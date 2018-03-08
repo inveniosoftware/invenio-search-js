@@ -365,5 +365,5 @@ invenioSearchCtrl.$inject = [
   '$scope', 'invenioSearchHandler', 'invenioSearchAPI'
 ];
 
-angular.module('invenioSearch.controllers')
+angular.module('invenioSearch.controllers', ['ngSanitize', 'MassAutoComplete'])
   .controller('invenioSearchCtrl', invenioSearchCtrl);

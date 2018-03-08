@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "angular": "=1.4.8",
+    "angular-mass-autocomplete": "^0.5.0",
     "angular-mocks": "=1.4.8",
+    "angular-sanitize": "^1.5.8",
     "angular-scenario": "=1.4.8",
     "d3": "^3.5.17"
   },

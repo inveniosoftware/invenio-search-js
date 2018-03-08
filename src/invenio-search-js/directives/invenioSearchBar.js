@@ -35,7 +35,7 @@
   *        ... Any children directives
   *    </invenio-search-bar>
   */
-function invenioSearchBar() {
+function invenioSearchBar($q, $http) {
 
   // Functions
 
@@ -59,6 +59,70 @@ function invenioSearchBar() {
 
     scope.placeholder = attrs.placeholder;
     scope.updateQuery = updateQuery;
+
+    var url = attrs.suggestEndpoint || '/api/records/';
+
+    /**
+    * Suggester function to fetch suggestions from url
+    * @param term - The term to search for suggestions.
+    * See http://hakib.github.io/MassAutocomplete/
+    */
+    function suggest_state_remote(term) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: url,
+        params: {
+          q: term
+        }
+      }).then(function (response) {
+        var results = [];
+        if (response.data.hits.hits) {
+          angular.forEach(response.data.hits.hits, function (value, index) {
+            results.push({
+              label: value.metadata.title.title,
+              value: value.metadata.title.title
+            });
+          });
+        }
+        results.reverse();
+        deferred.resolve(results);
+      });
+      return deferred.promise;
+    }
+
+    /**
+    * Callback to be fired when a suggestion is selected. Triggers a new search
+    * on selection.
+    * @param selected - The selected suggestion item.
+    * See http://hakib.github.io/MassAutocomplete/
+    */
+    function onSelect(selected) {
+      function isEmpty(value) {
+        return value === undefined ||
+          value === null ||
+          (typeof value === 'object' && Object.keys(value).length === 0) ||
+          (typeof value === 'string' && value.trim().length === 0);
+      }
+
+      if (selected && !isEmpty(selected.value)) {
+        vm.userQuery = selected.value;
+        updateQuery();
+      }
+    }
+
+    var suggesterEnable = attrs.suggesterEnable || false;
+
+    if (suggesterEnable) {
+      scope.autocomplete_options = angular.merge(
+        attrs.autocompleteOptions || {},
+        {
+          suggest: suggest_state_remote,
+          on_select: onSelect,
+        }
+      );
+    }
+
   }
 
   /**
@@ -89,4 +153,4 @@ function invenioSearchBar() {
 }
 
 angular.module('invenioSearch.directives')
-  .directive('invenioSearchBar', invenioSearchBar);
+  .directive('invenioSearchBar', ['$q', '$http', invenioSearchBar]);

@@ -22,13 +22,19 @@
 <html>
   <head>
     <script src="./node_modules/angular/angular.js"></script>
+    <script src="./node_modules/angular-mass-autocomplete/massautocomplete.js"></script>
+    <script src="./node_modules/angular-sanitize/angular-sanitize.js"></script>
     <script src="./node_modules/d3/d3.js"></script>
     <script src="./node_modules/d3-tip/index.js"></script>
     <script src="/dist/invenio-search-js.js"></script>
     <link href="./node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet"/>
+    <link href="./node_modules/angular-mass-autocomplete/massautocomplete.theme.css" rel="stylesheet"/>
     <style>
       body {
         padding-top: 70px;
+      }
+      .ac-container {
+        position: inherit !important;
       }
     </style>
   </head>
@@ -58,8 +64,16 @@
                   <!-- SEARCHBAR -->
                   <invenio-search-bar
                    template="/src/invenio-search-js/templates/searchBar.html"
-                   placeholder="Start typing">
+                   placeholder="Start typing"
+                   >
                   </invenio-search-bar>
+                  <!-- SEARCHBAR WITH SUGGESTIONS-->
+                  <!-- <invenio-search-bar
+                   template="/src/invenio-search-js/templates/searchBar_autocomplete.html"
+                   placeholder="Start typing"
+                   suggester-enable='true'
+                   suggest-endpoint="http://localhost:5000/api/records/">
+                  </invenio-search-bar> -->
                   <div class="text-right">
                     <!-- SORT ORDER -->
                     <invenio-search-sort-order
