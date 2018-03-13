@@ -95,7 +95,7 @@ describe('Check search results directive', function() {
   it('should have attributes', function() {
     expect(template.scope().vm.invenioSearchResults.hits.hits.length).to.be.equal(2);
     //// Expect html list items to be 2
-    expect(template.find('li').size()).to.be.equal(2);
+    expect(template.find('li').length).to.be.equal(2);
     // Expect the frist element to be Iron Man and the second Captain America
     expect(template.find('li').eq(0).text().trim()).to.be.equal('1: I\'m Iron Man');
     expect(template.find('li').eq(1).text().trim()).to.be.equal('2: I\'m Captain America');
