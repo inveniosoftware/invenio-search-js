@@ -87,7 +87,7 @@ describe('Check search pagination directive', function() {
   });
 
   it('should have 4 pages', function() {
-    expect(template.find('li').size()).to.be.equal(8);
+    expect(template.find('li').length).to.be.equal(8);
   });
 
   it('should have two dots li items', function() {
