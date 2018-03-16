@@ -64,7 +64,7 @@
     "docs": "jsdoc -c .jsdoc -u examples/tutorials/ --pedantic src/",
     "test": "gulp test"
   },
-  "license": "GPLv2",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/inveniosoftware/invenio-search-js/issues"
   },
