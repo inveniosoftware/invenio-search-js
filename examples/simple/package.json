@@ -10,7 +10,7 @@
     "name": "CERN",
     "email": "info@inveniosoftware.org"
   },
-  "license": "GPLv2",
+  "license": "MIT",
   "private": "true",
   "dependencies": {
     "angular": "^1.4.8",
