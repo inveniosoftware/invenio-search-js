@@ -6,10 +6,10 @@
     under the terms of the MIT License; see LICENSE file for more details.
 
 =========================
- Invenio-Search-JS v1.5.6
+ Invenio-Search-JS v1.5.7
 =========================
 
-Invenio-Search-JS v1.5.6 was released on 20 March 2018.
+Invenio-Search-JS v1.5.7 was released on 21 March 2018.
 
 About
 -----
