@@ -3,8 +3,7 @@ Invenio-Search-Js
 
 [![Build Status](https://img.shields.io/travis/inveniosoftware/invenio-search-js.svg)](https://travis-ci.org/inveniosoftware/invenio-search-js)
 [![Coverage](https://img.shields.io/coveralls/inveniosoftware/invenio-search-js.svg)](https://coveralls.io/r/inveniosoftware/invenio-search-js)
-[![Release](https://img.shields.io/github/tag/inveniosoftware/invenio-search-js.svg)](https://github.com/inveniosoftware/invenio-search-js/releases)
-[![LICENSE](https://img.shields.io/github/license/inveniosoftware/invenio-search-js.svg)](https://github.com/inveniosoftware/invenio-search-js/blob/master/LICENSE)
+[![Release](https://img.shields.io/npm/v/invenio-search-js.svg)](https://www.npmjs.com/package/invenio-search-js)
 
 Invenio-Search client library for building the web UI.
 
