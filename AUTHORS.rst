@@ -5,13 +5,20 @@
     Invenio is free software; you can redistribute it and/or modify it
     under the terms of the MIT License; see LICENSE file for more details.
 
-Authors
-=======
+Contributors
+============
 
-Invenio Search JS.
-
-- Harris Tzovanakis <me@drjova.com>
-- Jiri Kuncar <jiri.kuncar@cern.ch>
-- Joao Goncalves <jsvgoncalves@gmail.com>
-- Lars Holm Nielsen <lars.holm.nielsen@cern.ch>
-- Nikos Filippakis <nikolaos.filippakis@cern.ch>
+- Alexander Ioannidis
+- Chiara Bigarella
+- Diego Rodriguez
+- Dinika Saxena
+- Eamonn Maguire
+- Harris Tzovanakis
+- Javier Martin Montull
+- Jiri Kuncar
+- João Gonçalves
+- Lars Holm Nielsen
+- Nicola Tarocco
+- Nikos Filippakis
+- Tibor Simko
+- Zacharias Zacharodimos
