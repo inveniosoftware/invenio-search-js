@@ -8,7 +8,7 @@
 Invenio-Search-Js
 =================
 
-[![Build Status](https://img.shields.io/travis/inveniosoftware/invenio-search-js.svg)](https://travis-ci.org/inveniosoftware/invenio-search-js)
+[![Build Status](https://github.com/inveniosoftware/invenio-search-js/workflows/CI/badge.svg)](https://github.com/inveniosoftware/invenio-search-js/actions)
 [![Coverage](https://img.shields.io/coveralls/inveniosoftware/invenio-search-js.svg)](https://coveralls.io/r/inveniosoftware/invenio-search-js)
 [![Release](https://img.shields.io/npm/v/invenio-search-js.svg)](https://www.npmjs.com/package/invenio-search-js)
 
